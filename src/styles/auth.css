@@ -97,6 +97,42 @@ a.reg-topbar-brand:hover {
   pointer-events: auto;
 }
 
+/* FR | العربية : barre du haut sur grand écran ; bulle fixe en bas sur téléphone */
+.reg-topbar-lang-desktop {
+  display: none;
+  align-items: center;
+}
+@media (min-width: 901px) {
+  .reg-topbar-lang-desktop {
+    display: flex;
+  }
+}
+.reg-lang-bubble {
+  display: none;
+  position: fixed;
+  bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  pointer-events: auto;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--rb-line);
+  box-shadow:
+    0 4px 6px -1px rgba(11, 20, 55, 0.08),
+    0 14px 36px -10px rgba(11, 20, 55, 0.24);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+@media (max-width: 900px) {
+  .reg-lang-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 /* Marchand | Client — version compacte dans la barre */
 .reg-topbar .reg-switch {
   padding: 4px;
@@ -843,7 +879,7 @@ a.reg-topbar-brand:hover {
     flex: 0 0 100vw;
     width: 100vw;
     min-height: 100%;
-    padding: 100px 20px 36px;
+    padding: 100px 20px max(96px, calc(28px + env(safe-area-inset-bottom, 0px)));
   }
   .reg-panel.form-panel {
     display: flex;

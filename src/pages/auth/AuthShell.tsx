@@ -209,7 +209,9 @@ export default function AuthShell({ activeRole, authMode, children }: AuthShellP
           <span>SafeOrder</span>
         </div>
         <div className="reg-topbar-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <LanguageSwitch />
+          <div className="reg-topbar-lang-desktop">
+            <LanguageSwitch variant="auth" />
+          </div>
           <div className={switchClass} role="group" aria-label={t("shell.chooseSpace")}>
             <button
               type="button"
@@ -234,6 +236,10 @@ export default function AuthShell({ activeRole, authMode, children }: AuthShellP
           {children}
           <BrandPanel />
         </div>
+      </div>
+
+      <div className="reg-lang-bubble" role="region" aria-label={t("shell.languageBubbleAria")}>
+        <LanguageSwitch variant="auth" />
       </div>
     </div>
   );
