@@ -97,36 +97,36 @@ export default function ClientDashboard() {
       ) : (
         <div className="min-h-screen bg-gradient-to-b from-muted/50 via-background to-background pb-16">
           <header className="border-b border-primary/20 bg-primary text-primary-foreground shadow-sm">
-            <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-6">
+            <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-6">
               <div className="min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/70">{t("dashboard.title")}</p>
-                <p className="mt-1 truncate text-2xl font-bold tracking-tight">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-primary-foreground/70 sm:text-xs">{t("dashboard.title")}</p>
+                <p className="mt-0.5 truncate text-lg font-bold tracking-tight sm:mt-1 sm:text-2xl">
                   {[client.firstName, client.lastName].filter(Boolean).join(" ").trim() || t("dashboard.title")}
                 </p>
-                <p className="mt-1 font-mono text-sm text-primary-foreground/90">{client.phone}</p>
+                <p className="mt-0.5 font-mono text-xs text-primary-foreground/90 sm:mt-1 sm:text-sm">{client.phone}</p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end lg:shrink-0">
-                <nav className="flex flex-wrap gap-2" aria-label="Navigation client">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3 lg:shrink-0">
+                <nav className="-mx-1 flex flex-nowrap gap-1.5 overflow-x-auto px-1 pb-0.5 sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0" aria-label="Navigation client">
                   <Link href="/client/dashboard">
-                    <Button size="sm" variant="secondary" className="gap-1.5 bg-primary-foreground/15 text-primary-foreground hover:bg-primary-foreground/25">
-                      <LayoutDashboard className="h-4 w-4" />
-                      {t("dashboard.navDashboard")}
+                    <Button size="sm" variant="secondary" className="shrink-0 gap-1.5 bg-primary-foreground/15 text-primary-foreground hover:bg-primary-foreground/25">
+                      <LayoutDashboard className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:inline">{t("dashboard.navDashboard")}</span>
                     </Button>
                   </Link>
                   <Link href="/client/orders">
-                    <Button size="sm" variant="ghost" className="gap-1.5 text-primary-foreground hover:bg-primary-foreground/15">
-                      <ListOrdered className="h-4 w-4" />
-                      {t("dashboard.navOrders")}
+                    <Button size="sm" variant="ghost" className="shrink-0 gap-1.5 text-primary-foreground hover:bg-primary-foreground/15">
+                      <ListOrdered className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:inline">{t("dashboard.navOrders")}</span>
                     </Button>
                   </Link>
                   <Link href="/track">
-                    <Button size="sm" variant="ghost" className="gap-1.5 text-primary-foreground hover:bg-primary-foreground/15">
-                      <Search className="h-4 w-4" />
-                      {t("dashboard.navTrack")}
+                    <Button size="sm" variant="ghost" className="shrink-0 gap-1.5 text-primary-foreground hover:bg-primary-foreground/15">
+                      <Search className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="sr-only sm:not-sr-only sm:inline">{t("dashboard.navTrack")}</span>
                     </Button>
                   </Link>
                 </nav>
-                <div className="flex items-center gap-2 border-t border-primary-foreground/15 pt-3 sm:border-t-0 sm:pt-0">
+                <div className="flex items-center gap-2 border-t border-primary-foreground/15 pt-2 sm:border-t-0 sm:pt-0">
                   <LanguageSwitch />
                   <Button
                     variant="ghost"
@@ -142,27 +142,27 @@ export default function ClientDashboard() {
             </div>
           </header>
 
-          <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
             {(walletLoading || analyticsLoading) && phoneDigits.length >= 9 ? (
-              <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mb-4 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 xl:grid-cols-4">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} className="h-24 rounded-xl" />
+                  <Skeleton key={i} className="h-[4.5rem] rounded-xl sm:h-24" />
                 ))}
               </div>
             ) : wallet && analytics && phoneDigits.length >= 9 ? (
-              <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <Card className="border-primary/10 shadow-sm">
-                  <CardContent className="flex items-center gap-3 pt-5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Package className="h-5 w-5" />
+                  <CardContent className="flex items-center gap-2 pt-4 sm:gap-3 sm:pt-5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary sm:h-11 sm:w-11 sm:rounded-xl">
+                      <Package className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("dashboard.statOrders")}</p>
-                      <p className="text-2xl font-bold tabular-nums">{analytics.ordersTotal}</p>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">{t("dashboard.statOrders")}</p>
+                      <p className="text-xl font-bold tabular-nums sm:text-2xl">{analytics.ordersTotal}</p>
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="border-emerald-500/15 shadow-sm">
+                <Card className="hidden border-emerald-500/15 shadow-sm md:block">
                   <CardContent className="flex items-center gap-3 pt-5">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
                       <ShieldCheck className="h-5 w-5" />
@@ -173,7 +173,7 @@ export default function ClientDashboard() {
                     </div>
                   </CardContent>
                 </Card>
-                <Card className="border-amber-500/15 shadow-sm">
+                <Card className="hidden border-amber-500/15 shadow-sm md:block">
                   <CardContent className="flex items-center gap-3 pt-5">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300">
                       <TrendingUp className="h-5 w-5" />
@@ -185,23 +185,37 @@ export default function ClientDashboard() {
                   </CardContent>
                 </Card>
                 <Card className="border-violet-500/15 shadow-sm">
-                  <CardContent className="flex items-center gap-3 pt-5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/10 text-violet-700 dark:text-violet-300">
-                      <Wallet className="h-5 w-5" />
+                  <CardContent className="flex items-center gap-2 pt-4 sm:gap-3 sm:pt-5">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-700 dark:text-violet-300 sm:h-11 sm:w-11 sm:rounded-xl">
+                      <Wallet className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("dashboard.statSafePayHeld")}</p>
-                      <p className="truncate text-lg font-bold tabular-nums">{formatDzd(wallet.safePayHeld)}</p>
+                      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground sm:text-xs">{t("dashboard.statSafePayHeld")}</p>
+                      <p className="truncate text-base font-bold tabular-nums sm:text-2xl">{formatDzd(wallet.safePayHeld)}</p>
                     </div>
                   </CardContent>
                 </Card>
               </div>
             ) : null}
 
+            {wallet && phoneDigits.length >= 9 ? (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg border border-border/80 bg-muted/30 px-3 py-2.5 text-xs sm:text-sm lg:hidden">
+                <span className="font-medium text-foreground">{t("dashboard.walletCashback")}</span>
+                <span className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{formatDzd(wallet.cashbackAvailable)}</span>
+              </div>
+            ) : null}
+
+            <Link href="/track" className="mb-4 block lg:hidden">
+              <Button type="button" className="w-full gap-2" size="lg">
+                <Search className="h-4 w-4" />
+                {t("dashboard.navTrack")}
+              </Button>
+            </Link>
+
             <div className="grid gap-8 lg:grid-cols-3 lg:items-start">
               <div className="space-y-6 lg:col-span-2">
                 <section
-                  className="rounded-2xl border border-dashed border-amber-800/25 bg-amber-50/90 p-4 shadow-sm dark:border-amber-500/30 dark:bg-amber-950/25"
+                  className="rounded-xl border border-dashed border-amber-800/25 bg-amber-50/90 p-3 shadow-sm sm:rounded-2xl sm:p-4 dark:border-amber-500/30 dark:bg-amber-950/25"
                   aria-label={t("dashboard.productTestAria")}
                   data-testid="client-product-form-demo"
                 >
@@ -212,12 +226,12 @@ export default function ClientDashboard() {
                         {t("dashboard.productTestTitle")}
                       </h2>
                     </div>
-                    <Badge className="shrink-0 border-0 bg-amber-200/90 text-[10px] font-bold uppercase text-amber-900 dark:bg-amber-400/30 dark:text-amber-50">
+                    <Badge className="hidden shrink-0 border-0 bg-amber-200/90 text-[10px] font-bold uppercase text-amber-900 sm:inline-flex dark:bg-amber-400/30 dark:text-amber-50">
                       {t("dashboard.productTestBadge")}
                     </Badge>
                   </div>
-                  <p className="text-xs leading-relaxed text-amber-950/80 dark:text-amber-100/80">{t("dashboard.productTestDesc")}</p>
-                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <p className="hidden text-xs leading-relaxed text-amber-950/80 sm:block dark:text-amber-100/80">{t("dashboard.productTestDesc")}</p>
+                  <div className="mt-2 hidden grid-cols-2 gap-2 sm:mt-3 sm:grid sm:grid-cols-4">
                     <div className="rounded-lg border border-border/80 bg-card px-2 py-3 text-center shadow-sm">
                       <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">{t("dashboard.productTestLabelName")}</p>
                       <p className="mt-1 break-words text-sm font-semibold text-primary">{t("dashboard.productTestValName")}</p>
@@ -237,7 +251,7 @@ export default function ClientDashboard() {
                       <p className="mt-1 text-sm font-semibold text-primary">{t("dashboard.productTestValCategory")}</p>
                     </div>
                   </div>
-                  <Link href={`/order/${DEMO_PRODUCT_FORM_ID}?demo=1`} className="mt-3 block">
+                  <Link href={`/order/${DEMO_PRODUCT_FORM_ID}?demo=1`} className="mt-2 block sm:mt-3">
                     <Button
                       type="button"
                       variant="secondary"
@@ -248,7 +262,7 @@ export default function ClientDashboard() {
                   </Link>
                 </section>
 
-                <div className="rounded-xl border bg-card p-4 shadow-sm flex items-start gap-3">
+                <div className="hidden rounded-xl border bg-card p-4 shadow-sm lg:flex lg:items-start lg:gap-3">
                   <ShieldCheck className="h-6 w-6 text-primary shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-sm">{t("dashboard.linkedTitle")}</p>
@@ -256,7 +270,7 @@ export default function ClientDashboard() {
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="hidden gap-4 lg:grid lg:grid-cols-2">
                   <Card className="shadow-sm">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base flex items-center gap-2">
@@ -321,14 +335,14 @@ export default function ClientDashboard() {
                 </div>
 
                 <Card className="shadow-sm">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base flex items-center gap-2">
+                  <CardHeader className="space-y-1 pb-2 sm:space-y-1.5">
+                    <CardTitle className="flex items-center gap-2 text-base">
                       <Package className="h-4 w-4" />
                       {t("dashboard.ordersTitle")}
                     </CardTitle>
-                    <CardDescription>{t("dashboard.ordersDesc", { phone: client.phone })}</CardDescription>
+                    <CardDescription className="hidden sm:block">{t("dashboard.ordersDesc", { phone: client.phone })}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-2 sm:space-y-3">
                     {ordersLoading ? (
                       <>
                         <Skeleton className="h-20 w-full" />
@@ -340,28 +354,28 @@ export default function ClientDashboard() {
                           const statusClass = orderStatusBadgeClass(order.status);
                           const statusLabel = tc(`orderStatus.${order.status}` as const);
                           return (
-                            <div key={order.id} className="rounded-lg border p-3 space-y-2 bg-card/50">
+                            <div key={order.id} className="space-y-2 rounded-lg border bg-card/50 p-2.5 sm:p-3">
                               <div className="flex items-start justify-between gap-2">
                                 <div className="min-w-0">
-                                  <p className="font-semibold text-sm truncate">{order.product?.name ?? tc("product")}</p>
-                                  <p className="text-xs text-muted-foreground truncate">{order.shopName}</p>
-                                  <p className="font-mono text-xs text-muted-foreground mt-0.5">{order.trackingCode}</p>
+                                  <p className="truncate text-sm font-semibold">{order.product?.name ?? tc("product")}</p>
+                                  <p className="truncate text-xs text-muted-foreground">{order.shopName}</p>
+                                  <p className="mt-0.5 font-mono text-[11px] text-muted-foreground sm:text-xs">{order.trackingCode}</p>
                                 </div>
-                                <Badge className={`text-xs shrink-0 ${statusClass}`}>{statusLabel}</Badge>
+                                <Badge className={`shrink-0 text-[10px] sm:text-xs ${statusClass}`}>{statusLabel}</Badge>
                               </div>
-                              <div className="flex justify-between text-xs text-muted-foreground">
+                              <div className="flex justify-between text-[11px] text-muted-foreground sm:text-xs">
                                 <span>{new Date(order.createdAt).toLocaleDateString(dateLocale)}</span>
                                 <span className="font-semibold text-foreground">{order.totalPrice.toLocaleString("fr-DZ")} DZD</span>
                               </div>
                               <div className="flex gap-2">
-                                <Link href={`/track/${encodeURIComponent(order.trackingCode)}`} className="flex-1">
-                                  <Button variant="outline" size="sm" className="w-full">
+                                <Link href={`/track/${encodeURIComponent(order.trackingCode)}`} className="min-w-0 flex-1">
+                                  <Button variant="outline" size="sm" className="h-9 w-full text-xs sm:h-10 sm:text-sm">
                                     {t("dashboard.track")}
                                   </Button>
                                 </Link>
                                 {order.status === "livre" && (
-                                  <Link href={`/client/feedback/${order.id}`}>
-                                    <Button size="sm" variant="secondary">
+                                  <Link href={`/client/feedback/${order.id}`} className="shrink-0">
+                                    <Button size="sm" variant="secondary" className="h-9 text-xs sm:h-10 sm:text-sm">
                                       {t("dashboard.review")}
                                     </Button>
                                   </Link>
@@ -377,14 +391,14 @@ export default function ClientDashboard() {
                   </CardContent>
                 </Card>
 
-                <Link href="/track" className="block">
+                <Link href="/track" className="hidden lg:block">
                   <Button variant="outline" className="w-full">
                     {t("dashboard.trackOther")}
                   </Button>
                 </Link>
               </div>
 
-              <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+              <aside className="hidden space-y-6 lg:block lg:sticky lg:top-6 lg:self-start">
                 <Card className="border-violet-500/20 shadow-md overflow-hidden">
                   <div className="bg-gradient-to-r from-violet-600/90 to-primary/90 px-4 py-3 text-primary-foreground">
                     <div className="flex items-center gap-2">
