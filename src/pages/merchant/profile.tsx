@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShieldCheck, Copy, ExternalLink } from "lucide-react";
+import { ShieldCheck, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function MerchantProfile() {

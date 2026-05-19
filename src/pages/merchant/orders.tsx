@@ -31,7 +31,8 @@ export default function MerchantOrders() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const params = activeTab === "all" ? {} : { status: activeTab };
+  const params: Record<string, string> =
+    activeTab === "all" ? {} : { status: activeTab };
   const { data: orders, isLoading } = useGetOrders(params, {
     query: { queryKey: getGetOrdersQueryKey(params) }
   });
