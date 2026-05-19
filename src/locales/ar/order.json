@@ -28,6 +28,7 @@
   "public": {
     "notFoundTitle": "المنتج غير موجود",
     "notFoundBody": "الرابط غير صالح أو منتهي.",
+    "demoFillBanner": "وضع الاختبار: حقول جاهزة (?demo=1). استخدم « المتابعة إلى الدفع » ثم أكّد. احذف ?demo=1 لفراغ النموذج.",
     "trustLine": "Trust Score: {{score}}/100 · محمي SafeOrder",
     "deliveryInfo": "معلومات التوصيل",
     "safePayTitle": "وديعة Safe Pay الذكية",

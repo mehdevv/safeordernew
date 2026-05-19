@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useLocation } from "wouter";
+import { useParams, useLocation, useSearch } from "wouter";
 import { useGetProductOrderLink, useCreateOrder } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,12 @@ const SAFE_PAY_RATE = 0.1;
 
 const DEFAULT_DELIVERY_COMPANIES = ["Yalidine", "Zaki", "Maystro", "Yalitec"] as const;
 
+/** Query `?demo=1` or `?test=1` — préremplit le formulaire (parcours client / QA uniquement). */
+function orderFormDemoFromSearch(search: string): boolean {
+  const q = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  return q.get("demo") === "1" || q.get("test") === "1";
+}
+
 function splitOfferedOptions(raw?: string | null): string[] {
   if (!raw?.trim()) return [];
   return raw.split(/[,;]/).map(s => s.trim()).filter(Boolean);
@@ -120,6 +126,8 @@ export default function OrderPublic() {
   const params = useParams<{ productId: string }>();
   const productId = parseInt(params.productId ?? "0", 10);
   const [, navigate] = useLocation();
+  const search = useSearch();
+  const isOrderDemoFill = useMemo(() => orderFormDemoFromSearch(search), [search]);
   const { toast } = useToast();
 
   const { data: product, isLoading, error } = useGetProductOrderLink(productId);
@@ -167,6 +175,35 @@ export default function OrderPublic() {
       product.deliveryCompanies && product.deliveryCompanies.length > 0
         ? product.deliveryCompanies
         : [...DEFAULT_DELIVERY_COMPANIES];
+    const colors = splitOfferedOptions(product.colorsOffered);
+    const sizes = splitOfferedOptions(product.sizesOffered);
+    const qm = product.maxOrderQuantity != null && product.maxOrderQuantity >= 1 ? Math.floor(product.maxOrderQuantity) : 1;
+    const st = product.stock != null && product.stock >= 1 ? Math.floor(product.stock) : 999999;
+    const maxQ = Math.max(1, Math.min(qm, st));
+    const demoQty = String(Math.min(2, maxQ));
+
+    if (isOrderDemoFill) {
+      setForm({
+        clientFirstName: "Amel",
+        clientLastName: "Benali",
+        clientPhone: "0555123456",
+        clientPhone2: "0661987654",
+        wilaya: "Alger",
+        commune: "Hydra",
+        address: "12 rue des Aurès, cité des oliviers",
+        address2: "Appt 4, interphone 12B",
+        quantity: demoQty,
+        colorChoice: colors[0] ?? "",
+        sizeChoice: sizes[0] ?? "",
+        deliveryCompany: carriers[0] ?? "",
+        receptionMode: "domicile",
+        remark: "Test SafeOrder — livraison préférée après 17h.",
+      });
+      setSelectedPayment(null);
+      setStep("details");
+      return;
+    }
+
     setForm(prev => ({
       ...prev,
       quantity: "1",
@@ -179,7 +216,7 @@ export default function OrderPublic() {
             ? prev.deliveryCompany
             : "",
     }));
-  }, [product]);
+  }, [product, isOrderDemoFill]);
 
   function isDetailsValid() {
     if (!product) return false;
@@ -295,6 +332,15 @@ export default function OrderPublic() {
             </div>
             <span className="text-xs text-muted-foreground">{step === "details" ? "1/2" : "2/2"}</span>
           </div>
+
+          {isOrderDemoFill && (
+            <p
+              role="status"
+              className="rounded-lg border border-dashed border-amber-500/40 bg-amber-50/90 px-3 py-2 text-center text-[11px] font-medium leading-snug text-amber-950 dark:bg-amber-950/30 dark:text-amber-100"
+            >
+              {t("public.demoFillBanner")}
+            </p>
+          )}
 
           <div className="flex items-center gap-3 bg-primary/5 rounded-xl p-4 border border-primary/10">
             <ShieldCheck className="h-8 w-8 text-primary shrink-0" />

@@ -688,14 +688,134 @@ export function useGetClientMe() {
 }
 
 export function useGetClientOrders(phone: string) {
+  const digits = phone.replace(/\D/g, "");
   return useQuery({
     queryKey: ["stub", "client-orders", phone],
-    enabled: phone.trim().length >= 9,
-    queryFn: async () => {
-      const digits = phone.replace(/\D/g, "");
-      /** Saisie « 055555555 » (9 chiffres) → même jeu de données que 0555555555 */
-      const normalized = digits === "055555555" ? "0555555555" : digits;
-      return mockOrders.filter((o) => o.clientPhone.replace(/\D/g, "") === normalized);
+    enabled: digits.length >= 9,
+    queryFn: async () => getStubClientOrdersByPhone(phone),
+  });
+}
+
+function normalizeClientPhoneDigits(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 9) return digits;
+  return digits === "055555555" ? "0555555555" : digits;
+}
+
+function getStubClientOrdersByPhone(phone: string): OrderRow[] {
+  const normalized = normalizeClientPhoneDigits(phone);
+  if (normalized.length < 9) return [];
+  return mockOrders.filter((o) => o.clientPhone.replace(/\D/g, "") === normalized);
+}
+
+function stubOrderDeposit(o: OrderRow): number {
+  if (o.safePayDepositAmount != null && Number.isFinite(o.safePayDepositAmount)) return Math.round(o.safePayDepositAmount);
+  return Math.round(o.totalPrice * 0.1);
+}
+
+export type ClientWalletSummary = {
+  currency: "DZD";
+  /** Dépôts Safe Pay encore bloqués (statut pending) */
+  safePayHeld: number;
+  /** Solde restant à payer à la livraison (commandes non terminées / non retour) */
+  pendingCodTotal: number;
+  /** Volume total des commandes (hors retour), indicatif */
+  lifetimeOrdersVolume: number;
+  /** Avoir fidélité démo (stub) */
+  cashbackAvailable: number;
+};
+
+export function useGetClientWallet(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  return useQuery({
+    queryKey: ["stub", "client-wallet", phone],
+    enabled: digits.length >= 9,
+    queryFn: async (): Promise<ClientWalletSummary> => {
+      const list = getStubClientOrdersByPhone(phone);
+      let safePayHeld = 0;
+      let pendingCodTotal = 0;
+      let lifetimeOrdersVolume = 0;
+      for (const o of list) {
+        if (o.status === "retour") continue;
+        const dep = stubOrderDeposit(o);
+        lifetimeOrdersVolume += o.totalPrice;
+        if (o.safePayStatus === "pending") safePayHeld += dep;
+        if (o.status !== "livre") {
+          pendingCodTotal += Math.max(0, o.totalPrice - dep);
+        }
+      }
+      const cashbackAvailable = normalizeClientPhoneDigits(phone) === "0555555555" ? 2500 : 0;
+      return {
+        currency: "DZD",
+        safePayHeld,
+        pendingCodTotal,
+        lifetimeOrdersVolume,
+        cashbackAvailable,
+      };
+    },
+  });
+}
+
+export type ClientAnalyticsMonthBar = { year: number; month: number; amount: number };
+
+export type ClientAnalyticsSummary = {
+  ordersTotal: number;
+  deliveredCount: number;
+  activePipelineCount: number;
+  spendLast30Days: number;
+  spendPrevious30Days: number;
+  averageOrderValue: number;
+  spendByMonth: ClientAnalyticsMonthBar[];
+};
+
+export function useGetClientAnalytics(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  return useQuery({
+    queryKey: ["stub", "client-analytics", phone],
+    enabled: digits.length >= 9,
+    queryFn: async (): Promise<ClientAnalyticsSummary> => {
+      const list = getStubClientOrdersByPhone(phone).filter((o) => o.status !== "retour");
+      const now = Date.now();
+      const d30 = now - 30 * 86400000;
+      const d60 = now - 60 * 86400000;
+      let spendLast30Days = 0;
+      let spendPrevious30Days = 0;
+      let deliveredCount = 0;
+      let activePipelineCount = 0;
+      for (const o of list) {
+        const t = new Date(o.createdAt).getTime();
+        if (t >= d30) spendLast30Days += o.totalPrice;
+        else if (t >= d60) spendPrevious30Days += o.totalPrice;
+        if (o.status === "livre") deliveredCount += 1;
+        if (o.status !== "livre") activePipelineCount += 1;
+      }
+      const ordersTotal = list.length;
+      const sum = list.reduce((a, o) => a + o.totalPrice, 0);
+      const averageOrderValue = ordersTotal > 0 ? Math.round(sum / ordersTotal) : 0;
+
+      const spendByMonth: ClientAnalyticsMonthBar[] = [];
+      for (let i = 2; i >= 0; i--) {
+        const d = new Date(now);
+        d.setMonth(d.getMonth() - i);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        let amount = 0;
+        for (const o of list) {
+          const cd = new Date(o.createdAt);
+          if (cd.getFullYear() === y && cd.getMonth() + 1 === m) amount += o.totalPrice;
+        }
+        spendByMonth.push({ year: y, month: m, amount });
+      }
+
+      return {
+        ordersTotal,
+        deliveredCount,
+        activePipelineCount,
+        spendLast30Days,
+        spendPrevious30Days,
+        averageOrderValue,
+        spendByMonth,
+      };
     },
   });
 }

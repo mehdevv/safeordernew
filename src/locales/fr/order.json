@@ -28,6 +28,7 @@
   "public": {
     "notFoundTitle": "Produit introuvable",
     "notFoundBody": "Ce lien est invalide ou expiré.",
+    "demoFillBanner": "Mode test : champs préremplis (?demo=1). Utilisez « Continuer vers le paiement », puis validez. Retirez ?demo=1 pour un formulaire vide.",
     "trustLine": "Trust Score: {{score}}/100 · Protégé SafeOrder",
     "deliveryInfo": "Informations de livraison",
     "safePayTitle": "Dépôt intelligent Safe Pay",
