@@ -1,0 +1,20 @@
+{
+  "title": "SafeTrack",
+  "subtitle": "تتبع طلبك في الوقت الفعلي. أدخل رمز التتبع لمعرفة حالة التوصيل.",
+  "cardTitle": "تتبع الطلب",
+  "cardDesc": "يبدأ رمزك بـ SAF-",
+  "placeholder": "SAF-XXXXXXX",
+  "submit": "تتبع طلبي",
+  "footerHint": "أتممت الطلب؟ ستجد الرمز في رسالة التأكيد النصية.",
+  "notFoundTitle": "الرمز غير موجود",
+  "notFoundBody": "لا يوجد طلب للرمز {{code}}. تحقق وحاول مجدداً.",
+  "retry": "إعادة المحاولة",
+  "backHome": "الرئيسية",
+  "resultTitle": "تتبع الطلب",
+  "currentState": "الحالة الحالية",
+  "deliveryHistory": "سجل التوصيل",
+  "estimatedDelivery": "التسليم المتوقع: {{date}}",
+  "deliveredTitle": "تم تسليم طلبك!",
+  "deliveredSub": "شارك تجربتك",
+  "review": "تقييم"
+}

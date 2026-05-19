@@ -13,6 +13,7 @@
       "@workspace/api-client-react": ["src/vendor/api-client-react/index.ts"]
     },
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

@@ -1,0 +1,22 @@
+{
+  "otpSentTitle": "تم إرسال الرمز",
+  "otpSentDesc": "تمت محاكاة رسالة نصية. رمز التجربة: {{code}}",
+  "invalidPhoneTitle": "خطأ",
+  "invalidPhoneDesc": "رقم الهاتف غير صالح.",
+  "loginRefusedTitle": "رفض الاتصال",
+  "loginRefusedDesc": "رمز OTP غير صحيح. التجربة: 123456",
+  "genericErrorTitle": "خطأ",
+  "orderCreateFail": "تعذر إتمام الطلب. حاول مرة أخرى.",
+  "profileUpdatedTitle": "تم تحديث الملف",
+  "profileUpdatedDesc": "تم حفظ معلوماتك.",
+  "profileUpdateFailDesc": "تعذر تحديث الملف.",
+  "orderStatusUpdated": "تم تحديث الحالة",
+  "productUpdated": "تم تحديث المنتج",
+  "productCreated": "تم إنشاء المنتج!",
+  "productSaveFail": "تعذر حفظ المنتج.",
+  "productArchived": "تمت أرشفة المنتج",
+  "productArchiveFail": "تعذر أرشفة المنتج.",
+  "linkCopiedTitle": "تم نسخ الرابط!",
+  "linkCopiedDesc": "شارك هذا الرابط مع عملائك.",
+  "feedbackSubmitFail": "تعذر إرسال تقييمك. حاول مرة أخرى."
+}

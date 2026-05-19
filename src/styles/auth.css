@@ -34,6 +34,11 @@
   position: relative;
 }
 
+/* Auth shell stays LTR when the document is RTL so fixed transforms stay correct */
+[dir="rtl"] .reg-root {
+  direction: ltr;
+}
+
 .reg-root *,
 .reg-root *::before,
 .reg-root *::after {

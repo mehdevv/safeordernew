@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MerchantLayout } from "@/components/merchant/layout";
 import {
   useGetProducts,
@@ -46,10 +47,17 @@ interface ProductFormData {
 }
 
 const EMPTY_FORM: ProductFormData = {
-  name: "", category: "", description: "", price: "", stock: "", variants: "",
+  name: "",
+  category: "",
+  description: "",
+  price: "",
+  stock: "",
+  variants: "",
 };
 
 export default function MerchantProducts() {
+  const { t } = useTranslation("merchant");
+  const { t: te } = useTranslation("errors");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -73,7 +81,15 @@ export default function MerchantProducts() {
     setDialogOpen(true);
   }
 
-  function openEdit(p: { id: number; name: string; category?: string | null; description?: string | null; price: number; stock?: number | null; variants?: string | null }) {
+  function openEdit(p: {
+    id: number;
+    name: string;
+    category?: string | null;
+    description?: string | null;
+    price: number;
+    stock?: number | null;
+    variants?: string | null;
+  }) {
     setEditingId(p.id);
     setForm({
       name: p.name,
@@ -104,7 +120,7 @@ export default function MerchantProducts() {
             variants: form.variants.trim() || undefined,
           },
         });
-        toast({ title: "Produit mis à jour" });
+        toast({ title: te("productUpdated") });
       } else {
         await createProduct.mutateAsync({
           data: {
@@ -116,12 +132,12 @@ export default function MerchantProducts() {
             variants: form.variants.trim() || undefined,
           },
         });
-        toast({ title: "Produit créé !" });
+        toast({ title: te("productCreated") });
       }
       queryClient.invalidateQueries({ queryKey: getGetProductsQueryKey() });
       setDialogOpen(false);
     } catch {
-      toast({ title: "Erreur", description: "Impossible d'enregistrer le produit.", variant: "destructive" });
+      toast({ title: te("genericErrorTitle"), description: te("productSaveFail"), variant: "destructive" });
     }
   }
 
@@ -130,17 +146,17 @@ export default function MerchantProducts() {
     try {
       await deleteProduct.mutateAsync({ id: archiveId });
       queryClient.invalidateQueries({ queryKey: getGetProductsQueryKey() });
-      toast({ title: "Produit archivé" });
+      toast({ title: te("productArchived") });
       setArchiveId(null);
     } catch {
-      toast({ title: "Erreur", description: "Impossible d'archiver le produit.", variant: "destructive" });
+      toast({ title: te("genericErrorTitle"), description: te("productArchiveFail"), variant: "destructive" });
     }
   }
 
   function copyOrderLink(productId: number) {
     const url = `${window.location.origin}/order/${productId}`;
     navigator.clipboard.writeText(url);
-    toast({ title: "Lien copié !", description: "Partagez ce lien avec vos clients." });
+    toast({ title: te("linkCopiedTitle"), description: te("linkCopiedDesc") });
   }
 
   const activeProducts = products?.filter(p => p.status === "active") ?? [];
@@ -151,18 +167,20 @@ export default function MerchantProducts() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Produits</h1>
-            <p className="text-muted-foreground text-sm mt-1">Gérez votre catalogue et générez des liens de commande</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t("products.title")}</h1>
+            <p className="text-muted-foreground text-sm mt-1">{t("products.subtitle")}</p>
           </div>
           <Button onClick={openAdd} className="gap-2">
             <Plus className="h-4 w-4" />
-            Ajouter un produit
+            {t("products.newProduct")}
           </Button>
         </div>
 
         {isLoading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map(i => <Skeleton key={i} className="h-48 rounded-xl" />)}
+            {[1, 2, 3].map(i => (
+              <Skeleton key={i} className="h-48 rounded-xl" />
+            ))}
           </div>
         ) : activeProducts.length === 0 ? (
           <Card>
@@ -171,12 +189,12 @@ export default function MerchantProducts() {
                 <Package className="h-10 w-10 text-muted-foreground" />
               </div>
               <div>
-                <p className="font-semibold">Aucun produit encore</p>
-                <p className="text-sm text-muted-foreground mt-1">Ajoutez votre premier produit pour générer un lien de commande</p>
+                <p className="font-semibold">{t("products.emptyTitle")}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t("products.emptyHint")}</p>
               </div>
               <Button onClick={openAdd} className="gap-2">
                 <Plus className="h-4 w-4" />
-                Ajouter un produit
+                {t("products.newProduct")}
               </Button>
             </CardContent>
           </Card>
@@ -188,50 +206,29 @@ export default function MerchantProducts() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="font-bold truncate">{product.name}</p>
-                      {product.category && (
-                        <p className="text-xs text-muted-foreground">{product.category}</p>
-                      )}
+                      {product.category && <p className="text-xs text-muted-foreground">{product.category}</p>}
                     </div>
                     <Badge variant="outline" className="shrink-0 text-sm font-bold">
-                      {product.price.toLocaleString('fr-DZ')} DZD
+                      {product.price.toLocaleString("fr-DZ")} DZD
                     </Badge>
                   </div>
 
-                  {product.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
-                  )}
+                  {product.description && <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>}
 
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="font-mono">REF: {product.reference}</span>
-                    {product.stock != null && (
-                      <span>· Stock: {product.stock}</span>
-                    )}
+                    <span className="font-mono">{t("products.ref", { ref: product.reference })}</span>
+                    {product.stock != null && <span>· {t("products.stockLine", { n: product.stock })}</span>}
                   </div>
 
                   <div className="flex gap-2 pt-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 gap-1"
-                      onClick={() => copyOrderLink(product.id)}
-                    >
+                    <Button variant="outline" size="sm" className="flex-1 gap-1" onClick={() => copyOrderLink(product.id)}>
                       <Copy className="h-3.5 w-3.5" />
-                      Lien
+                      {t("products.linkBtn")}
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1"
-                      onClick={() => window.open(`/order/${product.id}`, "_blank")}
-                    >
+                    <Button variant="outline" size="sm" className="gap-1" onClick={() => window.open(`/order/${product.id}`, "_blank")}>
                       <ExternalLink className="h-3.5 w-3.5" />
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1"
-                      onClick={() => openEdit(product)}
-                    >
+                    <Button variant="outline" size="sm" className="gap-1" onClick={() => openEdit(product)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
                     <Button
@@ -251,13 +248,13 @@ export default function MerchantProducts() {
 
         {archivedProducts.length > 0 && (
           <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground">Archivés ({archivedProducts.length})</h2>
+            <h2 className="text-sm font-medium text-muted-foreground">{t("products.archived", { n: archivedProducts.length })}</h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {archivedProducts.map(product => (
                 <Card key={product.id} className="opacity-50">
                   <CardContent className="pt-4 pb-3">
                     <p className="font-medium text-sm line-through">{product.name}</p>
-                    <p className="text-xs text-muted-foreground">{product.price.toLocaleString('fr-DZ')} DZD</p>
+                    <p className="text-xs text-muted-foreground">{product.price.toLocaleString("fr-DZ")} DZD</p>
                   </CardContent>
                 </Card>
               ))}
@@ -266,67 +263,64 @@ export default function MerchantProducts() {
         )}
       </div>
 
-      {/* Add / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{editingId ? "Modifier le produit" : "Ajouter un produit"}</DialogTitle>
+            <DialogTitle>{editingId ? t("products.dialogEdit") : t("products.dialogAdd")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1">
-              <Label htmlFor="prod-name">Nom du produit *</Label>
+              <Label htmlFor="prod-name">{t("products.nameLabel")}</Label>
               <Input id="prod-name" value={form.name} onChange={e => setField("name", e.target.value)} autoFocus />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label htmlFor="prod-price">Prix (DZD) *</Label>
+                <Label htmlFor="prod-price">{t("products.priceLabel")}</Label>
                 <Input id="prod-price" type="number" min={0} step={100} value={form.price} onChange={e => setField("price", e.target.value)} placeholder="4500" />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="prod-stock">Stock</Label>
+                <Label htmlFor="prod-stock">{t("products.stockLabel")}</Label>
                 <Input id="prod-stock" type="number" min={0} value={form.stock} onChange={e => setField("stock", e.target.value)} placeholder="100" />
               </div>
             </div>
             <div className="space-y-1">
-              <Label htmlFor="prod-cat">Catégorie</Label>
-              <Input id="prod-cat" value={form.category} onChange={e => setField("category", e.target.value)} placeholder="Électronique, Mode, Maison..." />
+              <Label htmlFor="prod-cat">{t("products.categoryLabel")}</Label>
+              <Input id="prod-cat" value={form.category} onChange={e => setField("category", e.target.value)} placeholder={t("products.categoryPh")} />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="prod-desc">Description</Label>
-              <Textarea id="prod-desc" rows={3} value={form.description} onChange={e => setField("description", e.target.value)} placeholder="Décrivez votre produit..." />
+              <Label htmlFor="prod-desc">{t("products.descLabel")}</Label>
+              <Textarea id="prod-desc" rows={3} value={form.description} onChange={e => setField("description", e.target.value)} placeholder={t("products.descPh")} />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="prod-variants">Variantes</Label>
-              <Input id="prod-variants" value={form.variants} onChange={e => setField("variants", e.target.value)} placeholder="Taille: S/M/L/XL, Couleur: Rouge/Bleu" />
+              <Label htmlFor="prod-variants">{t("products.variantsLabel")}</Label>
+              <Input id="prod-variants" value={form.variants} onChange={e => setField("variants", e.target.value)} placeholder={t("products.variantsPh")} />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Annuler</Button>
+              <Button variant="outline">{t("products.cancel")}</Button>
             </DialogClose>
-            <Button
-              onClick={handleSave}
-              disabled={!form.name.trim() || !form.price || createProduct.isPending || updateProduct.isPending}
-            >
-              {createProduct.isPending || updateProduct.isPending ? "Enregistrement..." : editingId ? "Mettre à jour" : "Créer le produit"}
+            <Button onClick={handleSave} disabled={!form.name.trim() || !form.price || createProduct.isPending || updateProduct.isPending}>
+              {createProduct.isPending || updateProduct.isPending
+                ? t("products.saving")
+                : editingId
+                  ? t("products.update")
+                  : t("products.create")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Archive Confirmation */}
       <AlertDialog open={archiveId != null} onOpenChange={open => !open && setArchiveId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Archiver ce produit ?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Le lien de commande ne sera plus accessible. Cette action peut être annulée en éditant le produit.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("products.archiveTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("products.archiveBody")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogCancel>{t("products.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleArchive} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Archiver
+              {t("products.archiveConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

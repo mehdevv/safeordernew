@@ -1,11 +1,10 @@
 /**
  * Marchand registration wizard, rendered in the `merchantPanel` slot of the
  * `AuthShell` (page unique formulaire + marque).
- * so navigating between Marchand login / signup / Client login / signup keeps
- * a single visual language.
  */
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 import { useRegisterMerchant } from "@workspace/api-client-react";
 import { setToken } from "@/lib/auth";
 import { activateMerchantAuth } from "@/lib/client-auth";
@@ -20,26 +19,7 @@ const WILAYAS = [
   "El Oued", "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Aïn Defla", "Naâma", "Aïn Témouchent", "Ghardaïa", "Relizane",
 ];
 
-const DELIVERY_COMPANIES = ["Yalidine", "ZR Express", "Maystro", "Procolis"] as const;
-
-/** Textes maquette — étape Safe Standards (inscription marchand). */
-const MERCHANT_SAFE_COMMIT_CONDITIONS = [
-  {
-    title: "Photos authentiques du produit",
-    body:
-      "Toutes les photos de vos produits doivent être des prises de vue réelles. Pas d'images Pinterest, pas de photos modifiées, pas de visuels recopiés. Chaque produit doit être photographié tel qu'il est.",
-  },
-  {
-    title: "Description complète et honnête",
-    body:
-      "Chaque produit doit avoir une description détaillée : taille, couleur exacte, matière, dimensions, mode d'utilisation. Tout ce que le client ne peut pas voir sur la photo doit être écrit.",
-  },
-  {
-    title: "Emballage soigné et protecteur",
-    body:
-      "Chaque commande doit être emballée de manière à protéger le produit durant le transport. Les produits fragiles doivent être sécurisés. Le client doit recevoir exactement ce qu'il a commandé.",
-  },
-] as const;
+const DELIVERY_COMPANIES = ["Yalidine", "ZR Express", "Maystro", "World Express"] as const;
 
 export default function MerchantRegisterWizard({
   onDone,
@@ -48,10 +28,20 @@ export default function MerchantRegisterWizard({
   onDone: () => void;
   loginHref?: string;
 }) {
+  const { t } = useTranslation("auth");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [error, setError] = useState("");
   const [accepted, setAccepted] = useState(false);
   const registerMutation = useRegisterMerchant();
+
+  const safeConditions = useMemo(
+    () => [
+      { title: t("merchantRegister.safe1Title"), body: t("merchantRegister.safe1Body") },
+      { title: t("merchantRegister.safe2Title"), body: t("merchantRegister.safe2Body") },
+      { title: t("merchantRegister.safe3Title"), body: t("merchantRegister.safe3Body") },
+    ],
+    [t],
+  );
 
   const [form, setForm] = useState({
     firstName: "Yacine",
@@ -65,6 +55,8 @@ export default function MerchantRegisterWizard({
     commune: "Bab Ezzouar",
     address: "Rue, Cité, N° 12",
     deliveryCompanies: ["Yalidine"] as string[],
+    deliveryOther: false,
+    deliveryOtherName: "",
   });
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
@@ -83,22 +75,24 @@ export default function MerchantRegisterWizard({
 
   function validate(): string {
     if (step === 1) {
-      if (!form.firstName.trim() || !form.lastName.trim()) return "Veuillez renseigner votre nom complet.";
-      if (!/^\S+@\S+\.\S+$/.test(form.email)) return "Email invalide.";
-      if (form.password.length < 6) return "Mot de passe : au moins 6 caractères.";
-      if (!/^0\d{9}$/.test(form.phone1.replace(/\s/g, ""))) return "Numéro de téléphone invalide (0XXXXXXXXX).";
+      if (!form.firstName.trim() || !form.lastName.trim()) return t("merchantRegister.errName");
+      if (!/^\S+@\S+\.\S+$/.test(form.email)) return t("merchantRegister.errEmail");
+      if (form.password.length < 6) return t("merchantRegister.errPwd");
+      if (!/^0\d{9}$/.test(form.phone1.replace(/\s/g, ""))) return t("merchantRegister.errPhone1");
       if (form.phone2.trim() && !/^0\d{9}$/.test(form.phone2.replace(/\s/g, "")))
-        return "Téléphone 2 invalide (0XXXXXXXXX) ou laissez vide.";
+        return t("merchantRegister.errPhone2");
     }
     if (step === 2) {
-      if (!form.shopName.trim()) return "Veuillez indiquer le nom de la boutique.";
-      if (!form.wilaya) return "Veuillez sélectionner une wilaya.";
-      if (!form.commune.trim()) return "Veuillez indiquer la commune.";
-      if (!form.address.trim()) return "Veuillez indiquer l'adresse.";
-      if (form.deliveryCompanies.length === 0) return "Sélectionnez au moins une société de livraison.";
+      if (!form.shopName.trim()) return t("merchantRegister.errShop");
+      if (!form.wilaya) return t("merchantRegister.errWilaya");
+      if (!form.commune.trim()) return t("merchantRegister.errCommune");
+      if (!form.address.trim()) return t("merchantRegister.errAddress");
+      const hasPreset = form.deliveryCompanies.length > 0;
+      const otherName = form.deliveryOtherName.trim();
+      if (form.deliveryOther && !otherName) return t("merchantRegister.errDeliveryOther");
+      if (!hasPreset && !(form.deliveryOther && otherName)) return t("merchantRegister.errDelivery");
     }
-    if (step === 3 && !accepted)
-      return "Veuillez cocher la case pour accepter les 3 conditions Safe Standards.";
+    if (step === 3 && !accepted) return t("merchantRegister.errAccept");
     return "";
   }
 
@@ -114,15 +108,20 @@ export default function MerchantRegisterWizard({
       setStep((step + 1) as 2 | 3);
       return;
     }
+    const { deliveryOther, deliveryOtherName, deliveryCompanies, ...merchantRest } = form;
+    const mergedDelivery = [
+      ...deliveryCompanies,
+      ...(deliveryOther && deliveryOtherName.trim() ? [deliveryOtherName.trim()] : []),
+    ];
     registerMutation.mutate(
-      { data: { ...form } },
+      { data: { ...merchantRest, deliveryCompanies: mergedDelivery } },
       {
         onSuccess: res => {
           setToken(res.token);
           activateMerchantAuth();
           onDone();
         },
-        onError: () => setError("Impossible de créer le compte. Vérifiez vos informations."),
+        onError: () => setError(t("merchantRegister.errRegister")),
       },
     );
   }
@@ -133,11 +132,11 @@ export default function MerchantRegisterWizard({
   }
 
   return (
-    <section className="reg-panel form-panel" aria-label="Inscription marchand" data-form="merchant">
+    <section className="reg-panel form-panel" aria-label={t("merchantRegister.aria")} data-form="merchant">
       <div className="reg-form-inner">
-        <h1 className="reg-form-title">Créer votre compte boutique</h1>
+        <h1 className="reg-form-title">{t("merchantRegister.title")}</h1>
         <p style={{ fontSize: 14, color: "var(--rb-ink-3)", margin: "-12px 0 14px" }}>
-          Étape {step} sur 3 — vos infos, votre boutique, et les Safe Standards.
+          {t("merchantRegister.stepLine", { step })}
         </p>
 
         <div className="reg-step-dots" role="progressbar" aria-valuemin={1} aria-valuemax={3} aria-valuenow={step}>
@@ -153,11 +152,11 @@ export default function MerchantRegisterWizard({
           {step === 1 && (
             <>
               <div className="reg-row">
-                <Field label="Nom *" value={form.lastName} onChange={v => set("lastName", v)} required autoComplete="family-name" />
-                <Field label="Prénom *" value={form.firstName} onChange={v => set("firstName", v)} required autoComplete="given-name" />
+                <Field label={t("merchantRegister.lastName")} value={form.lastName} onChange={v => set("lastName", v)} required autoComplete="family-name" />
+                <Field label={t("merchantRegister.firstName")} value={form.firstName} onChange={v => set("firstName", v)} required autoComplete="given-name" />
               </div>
               <Field
-                label="Email *"
+                label={t("merchantRegister.email")}
                 type="email"
                 value={form.email}
                 onChange={v => set("email", v)}
@@ -167,7 +166,7 @@ export default function MerchantRegisterWizard({
               />
               <div className="reg-row">
                 <Field
-                  label="Téléphone 1 *"
+                  label={t("merchantRegister.phone1")}
                   type="tel"
                   value={form.phone1}
                   onChange={v => set("phone1", v)}
@@ -177,7 +176,7 @@ export default function MerchantRegisterWizard({
                   placeholder="0550 000 000"
                 />
                 <Field
-                  label="Téléphone 2 (opt.)"
+                  label={t("merchantRegister.phone2")}
                   type="tel"
                   value={form.phone2}
                   onChange={v => set("phone2", v)}
@@ -187,13 +186,13 @@ export default function MerchantRegisterWizard({
                 />
               </div>
               <Field
-                label="Mot de passe *"
+                label={t("merchantRegister.password")}
                 pwdToggle
                 value={form.password}
                 onChange={v => set("password", v)}
                 required
                 autoComplete="new-password"
-                placeholder="Au moins 6 caractères"
+                placeholder={t("merchantRegister.pwdPlaceholder")}
               />
               <div className="reg-pwd-strength">
                 <div className="bar" style={{ width: `${pwdScore * 25}%`, background: PWD_BAR_COLORS[pwdScore] }} />
@@ -204,7 +203,7 @@ export default function MerchantRegisterWizard({
           {step === 2 && (
             <>
               <Field
-                label="Nom de la boutique *"
+                label={t("merchantRegister.shopName")}
                 value={form.shopName}
                 onChange={v => set("shopName", v)}
                 required
@@ -212,24 +211,24 @@ export default function MerchantRegisterWizard({
               />
               <div className="reg-row">
                 <SelectField
-                  label="Wilaya *"
+                  label={t("merchantRegister.wilaya")}
                   value={form.wilaya}
                   onChange={v => set("wilaya", v)}
                   options={WILAYAS.map(w => ({ value: w, label: w }))}
                   required
-                  placeholder="Sélectionner…"
+                  placeholder={t("merchantRegister.wilayaPh")}
                 />
-                <Field label="Commune *" value={form.commune} onChange={v => set("commune", v)} required />
+                <Field label={t("merchantRegister.commune")} value={form.commune} onChange={v => set("commune", v)} required />
               </div>
               <Field
-                label="Adresse complète *"
+                label={t("merchantRegister.address")}
                 value={form.address}
                 onChange={v => set("address", v)}
                 required
-                placeholder="Rue, Cité, N° …"
+                placeholder={t("merchantRegister.addressPh")}
               />
               <div className="reg-delivery-section">
-                <div className="reg-delivery-heading">Sociétés de livraison *</div>
+                <div className="reg-delivery-heading">{t("merchantRegister.deliveryHeading")}</div>
                 <div className="reg-delivery-grid">
                   {DELIVERY_COMPANIES.map(name => (
                     <label key={name} className="reg-delivery-tile reg-checkbox">
@@ -241,7 +240,24 @@ export default function MerchantRegisterWizard({
                       <span>{name}</span>
                     </label>
                   ))}
+                  <label className="reg-delivery-tile reg-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={form.deliveryOther}
+                      onChange={e => set("deliveryOther", e.target.checked)}
+                    />
+                    <span>{t("merchantRegister.deliveryOther")}</span>
+                  </label>
                 </div>
+                {form.deliveryOther && (
+                  <Field
+                    label={t("merchantRegister.deliveryOtherLabel")}
+                    value={form.deliveryOtherName}
+                    onChange={v => set("deliveryOtherName", v)}
+                    placeholder={t("merchantRegister.deliveryOtherPh")}
+                    autoComplete="organization"
+                  />
+                )}
               </div>
             </>
           )}
@@ -249,15 +265,15 @@ export default function MerchantRegisterWizard({
           {step === 3 && (
             <>
               <div className="reg-safe-order">
-                <h2 className="reg-safe-order-title">Engagement Safe Order</h2>
+                <h2 className="reg-safe-order-title">{t("merchantRegister.safeTitle")}</h2>
                 <p className="reg-safe-order-lead">
-                  Pour bénéficier de la protection Safe Pay,
+                  {t("merchantRegister.safeLead")}
                   <br />
-                  vous acceptez les 3 conditions suivantes :
+                  {t("merchantRegister.safeLead2")}
                 </p>
                 <ol className="reg-safe-condition-list">
-                  {MERCHANT_SAFE_COMMIT_CONDITIONS.map((c, i) => (
-                    <li key={c.title} className="reg-safe-condition">
+                  {safeConditions.map((c, i) => (
+                    <li key={i} className="reg-safe-condition">
                       <span className="reg-safe-condition-badge" aria-hidden>
                         {i + 1}
                       </span>
@@ -270,17 +286,8 @@ export default function MerchantRegisterWizard({
                 </ol>
               </div>
               <label className="reg-checkbox reg-checkbox--safe-commit">
-                <input
-                  type="checkbox"
-                  checked={accepted}
-                  onChange={e => setAccepted(e.target.checked)}
-                  required
-                />
-<span>
-                  {
-                    "Je comprends et j'accepte les 3 conditions Safe Standards. Je m'engage à les respecter pour chaque commande."
-                  }
-                </span>
+                <input type="checkbox" checked={accepted} onChange={e => setAccepted(e.target.checked)} required />
+                <span>{t("merchantRegister.safeCommit")}</span>
               </label>
             </>
           )}
@@ -295,11 +302,11 @@ export default function MerchantRegisterWizard({
                 onClick={goBack}
                 disabled={registerMutation.isPending}
               >
-                ← Retour
+                {t("merchantRegister.back")}
               </button>
             ) : (
               <Link href={loginHref} className="reg-btn-secondary reg-btn-secondary--link">
-                Déjà un compte ?
+                {t("merchantRegister.hasAccount")}
               </Link>
             )}
             <button
@@ -311,9 +318,9 @@ export default function MerchantRegisterWizard({
               {registerMutation.isPending ? (
                 <Spinner />
               ) : step < 3 ? (
-                "Suivant →"
+                t("merchantRegister.next")
               ) : (
-                "Accéder à mon espace e-commerçant ›"
+                t("merchantRegister.finish")
               )}
             </button>
           </div>

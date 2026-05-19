@@ -1,5 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { MerchantLayout } from "@/components/merchant/layout";
 import { useGetPerformanceStats, useGetMerchantFeedbackReceived } from "@workspace/api-client-react";
+import i18n from "@/i18n";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -15,6 +17,7 @@ import {
 } from "recharts";
 import { Star } from "lucide-react";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 function pctPart(value: number, total: number): number {
   if (total <= 0) return 0;
@@ -22,6 +25,8 @@ function pctPart(value: number, total: number): number {
 }
 
 export default function MerchantStats() {
+  const { t } = useTranslation("merchant");
+  const dateLocale = i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-FR";
   const { data: stats, isLoading } = useGetPerformanceStats({ period: "30d" });
   const { data: feedbackList, isLoading: feedbackLoading } = useGetMerchantFeedbackReceived();
 
@@ -53,6 +58,22 @@ export default function MerchantStats() {
     [stats?.topProducts],
   );
 
+  const feedbackSentimentFooter = useMemo(() => {
+    const motifs = stats?.feedbackSentiment?.negativeMotifs;
+    if (!motifs?.length) return "";
+    return motifs
+      .map(m => `${t(`stats.feedbackNegReason_${m.id}`)} (${m.count})`)
+      .join(", ");
+  }, [stats?.feedbackSentiment?.negativeMotifs, t]);
+
+  const posPct = stats?.feedbackSentiment?.positivePct ?? 0;
+  const negPct = stats?.feedbackSentiment?.negativePct ?? 0;
+  const posFr = Math.max(posPct, 0);
+  const negFr = Math.max(negPct, 0);
+  const sumFr = posFr + negFr;
+  const gridPos = sumFr > 0 ? posFr : 1;
+  const gridNeg = sumFr > 0 ? negFr : 1;
+
   const weeklyRevenueInsight = useMemo(() => {
     const w = stats?.weeklyOrders ?? [];
     if (w.length < 2) return null;
@@ -69,12 +90,12 @@ export default function MerchantStats() {
   return (
     <MerchantLayout>
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold tracking-tight">Statistiques & Performance</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("stats.title")}</h1>
 
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Taux de confirmation</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{t("stats.confirmationRate")}</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -88,7 +109,7 @@ export default function MerchantStats() {
           </Card>
           <Card className="border-l-4 border-l-success">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Taux de livraison global</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{t("stats.deliveryRateGlobal")}</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -102,7 +123,7 @@ export default function MerchantStats() {
           </Card>
           <Card className="border-l-4 border-l-destructive">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Taux de retour</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">{t("stats.returnRate")}</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -116,10 +137,60 @@ export default function MerchantStats() {
           </Card>
         </div>
 
+        <Card data-testid="card-feedback-sentiment">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold">{t("stats.feedbackTotalTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {isLoading ? (
+              <Skeleton className="h-24 w-full rounded-xl" />
+            ) : (
+              <>
+                <div
+                  className="grid min-h-[5.5rem] gap-1 overflow-hidden rounded-xl"
+                  style={{ gridTemplateColumns: `${gridPos}fr ${gridNeg}fr` }}
+                >
+                  <div
+                    className={cn(
+                      "flex flex-col items-center justify-center px-2 py-3 text-center",
+                      "bg-emerald-100 dark:bg-emerald-950/40",
+                    )}
+                  >
+                    <span className="text-2xl font-bold tabular-nums text-emerald-900 dark:text-emerald-100">
+                      {posPct}%
+                    </span>
+                    <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                      {t("stats.feedbackPosLabel")}
+                    </span>
+                  </div>
+                  <div
+                    className={cn(
+                      "flex flex-col items-center justify-center px-2 py-3 text-center",
+                      "bg-rose-100 dark:bg-rose-950/40",
+                    )}
+                  >
+                    <span className="text-2xl font-bold tabular-nums text-rose-900 dark:text-rose-100">
+                      {negPct}%
+                    </span>
+                    <span className="text-xs font-medium text-rose-700 dark:text-rose-300">
+                      {t("stats.feedbackNegLabel")}
+                    </span>
+                  </div>
+                </div>
+                {feedbackSentimentFooter ? (
+                  <p className="text-sm text-muted-foreground">
+                    {t("stats.feedbackNegMotifsLead")} {feedbackSentimentFooter}
+                  </p>
+                ) : null}
+              </>
+            )}
+          </CardContent>
+        </Card>
+
         <Card data-testid="card-feedback-received">
           <CardHeader>
-            <CardTitle>Feedback reçu</CardTitle>
-            <CardDescription>Avis laissés par vos clients après livraison</CardDescription>
+            <CardTitle>{t("stats.feedbackTitle")}</CardTitle>
+            <CardDescription>{t("stats.feedbackDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             {feedbackLoading ? (
@@ -132,24 +203,27 @@ export default function MerchantStats() {
                 {feedbackMetrics ? (
                   <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
                     <div className="rounded-lg border bg-muted/40 p-3">
-                      <p className="text-xs font-medium text-muted-foreground">Satisfaction moyenne</p>
+                      <p className="text-xs font-medium text-muted-foreground">{t("stats.satAvg")}</p>
                       <p className="text-2xl font-bold tabular-nums">{feedbackMetrics.satPct}%</p>
-                      <p className="text-xs text-muted-foreground">{feedbackMetrics.avg.toFixed(1)}/5 étoiles</p>
+                      <p className="text-xs text-muted-foreground">
+                        {feedbackMetrics.avg.toFixed(1)}
+                        {t("stats.starsSuffix")}
+                      </p>
                     </div>
                     <div className="rounded-lg border bg-muted/40 p-3">
-                      <p className="text-xs font-medium text-muted-foreground">Avis 5 étoiles</p>
+                      <p className="text-xs font-medium text-muted-foreground">{t("stats.fiveStar")}</p>
                       <p className="text-2xl font-bold tabular-nums">{feedbackMetrics.fiveStarPct}%</p>
-                      <p className="text-xs text-muted-foreground">des retours clients</p>
+                      <p className="text-xs text-muted-foreground">{t("stats.fiveStarSub")}</p>
                     </div>
                     <div className="rounded-lg border bg-muted/40 p-3">
-                      <p className="text-xs font-medium text-muted-foreground">Notes 4★ et +</p>
+                      <p className="text-xs font-medium text-muted-foreground">{t("stats.fourPlus")}</p>
                       <p className="text-2xl font-bold tabular-nums text-success">{feedbackMetrics.fourPlusPct}%</p>
-                      <p className="text-xs text-muted-foreground">avis positifs</p>
+                      <p className="text-xs text-muted-foreground">{t("stats.fourPlusSub")}</p>
                     </div>
                     <div className="rounded-lg border bg-muted/40 p-3">
-                      <p className="text-xs font-medium text-muted-foreground">Volume d&apos;avis</p>
+                      <p className="text-xs font-medium text-muted-foreground">{t("stats.volume")}</p>
                       <p className="text-2xl font-bold tabular-nums">{feedbackMetrics.count}</p>
-                      <p className="text-xs text-muted-foreground">commandes notées</p>
+                      <p className="text-xs text-muted-foreground">{t("stats.volumeSub")}</p>
                     </div>
                   </div>
                 ) : null}
@@ -168,7 +242,7 @@ export default function MerchantStats() {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
                         <span className="text-sm font-semibold tabular-nums text-primary">{rowSatPct}%</span>
-                        <div className="flex items-center gap-0.5" aria-label={`Note ${f.rating} sur 5`}>
+                        <div className="flex items-center gap-0.5" aria-label={t("stats.ratingAria", { n: f.rating })}>
                           {[1, 2, 3, 4, 5].map(s => (
                             <Star
                               key={s}
@@ -186,20 +260,21 @@ export default function MerchantStats() {
                       </blockquote>
                     ) : null}
                     <p className="mt-3 text-xs text-muted-foreground">
-                      Reçu le{" "}
-                      {new Date(f.submittedAt).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
+                      {t("stats.receivedOn", {
+                        date: new Date(f.submittedAt).toLocaleDateString(dateLocale, {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }),
                       })}
-                      </p>
+                    </p>
                       </li>
                     );
                   })}
                 </ul>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">Aucun avis pour le moment.</p>
+              <p className="text-sm text-muted-foreground">{t("stats.noFeedback")}</p>
             )}
           </CardContent>
         </Card>
@@ -207,7 +282,7 @@ export default function MerchantStats() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card className="col-span-2 lg:col-span-1">
             <CardHeader>
-              <CardTitle>Revenus hebdomadaires</CardTitle>
+              <CardTitle>{t("stats.weeklyRevenueTitle")}</CardTitle>
             </CardHeader>
             <CardContent className="flex h-[340px] flex-col gap-2">
               {isLoading ? (
@@ -216,22 +291,11 @@ export default function MerchantStats() {
                 <>
                   {weeklyRevenueInsight ? (
                     <p className="shrink-0 text-xs text-muted-foreground">
-                      CA semaine :{" "}
-                      <span className="font-semibold text-foreground">
-                        {weeklyRevenueInsight.totalRev.toLocaleString("fr-DZ")} DZD
-                      </span>
-                      {" · "}
-                      Évolution premier → dernier jour :{" "}
-                      <span
-                        className={
-                          weeklyRevenueInsight.changePct >= 0 ? "font-semibold text-success" : "font-semibold text-destructive"
-                        }
-                      >
-                        {weeklyRevenueInsight.changePct >= 0 ? "+" : ""}
-                        {weeklyRevenueInsight.changePct}%
-                      </span>
-                      {" · "}
-                      Commandes : {weeklyRevenueInsight.totalOrders}
+                      {t("stats.insightRevenueLine", {
+                        ca: `${weeklyRevenueInsight.totalRev.toLocaleString("fr-DZ")} DZD`,
+                        trend: `${weeklyRevenueInsight.changePct >= 0 ? "+" : ""}${weeklyRevenueInsight.changePct}%`,
+                        orders: weeklyRevenueInsight.totalOrders,
+                      })}
                     </p>
                   ) : null}
                   <div className="min-h-0 flex-1 w-full">
@@ -259,7 +323,7 @@ export default function MerchantStats() {
 
           <Card className="col-span-2 lg:col-span-1">
             <CardHeader>
-              <CardTitle>Volume de commandes</CardTitle>
+              <CardTitle>{t("stats.orderVolumeTitle")}</CardTitle>
             </CardHeader>
             <CardContent className="flex h-[340px] flex-col gap-2">
               {isLoading ? (
@@ -268,13 +332,14 @@ export default function MerchantStats() {
                 <>
                   {weeklyRevenueInsight ? (
                     <p className="shrink-0 text-xs text-muted-foreground">
-                      Total semaine :{" "}
-                      <span className="font-semibold text-foreground">{weeklyRevenueInsight.totalOrders}</span> commande
-                      {weeklyRevenueInsight.totalOrders > 1 ? "s" : ""}
-                      {" · "}
-                      Dernier jour :{" "}
-                      <span className="font-semibold text-foreground">{weeklyRevenueInsight.lastDayOrdersPct}%</span> du
-                      volume hebdo
+                      {t("stats.insightOrdersLine", {
+                        total: weeklyRevenueInsight.totalOrders,
+                        ordersWord:
+                          weeklyRevenueInsight.totalOrders > 1
+                            ? t("stats.ordersPluralShort")
+                            : t("stats.ordersSingularShort"),
+                        lastPct: weeklyRevenueInsight.lastDayOrdersPct,
+                      })}
                     </p>
                   ) : null}
                   <div className="min-h-0 flex-1 w-full">
@@ -297,8 +362,8 @@ export default function MerchantStats() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Performance des livreurs</CardTitle>
-              <CardDescription>Taux de livraison par compagnie</CardDescription>
+              <CardTitle>{t("stats.courierTitle")}</CardTitle>
+              <CardDescription>{t("stats.courierDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -317,12 +382,12 @@ export default function MerchantStats() {
                         <div className="mb-1 flex justify-between gap-2">
                           <span className="text-sm font-medium">{company.company}</span>
                           <span className="shrink-0 text-right text-sm text-muted-foreground">
-                            <span className="font-semibold text-foreground">{company.rate}%</span> livrés
+                            <span className="font-semibold text-foreground">{company.rate}%</span> {t("stats.deliveredLabel")}
                             <span className="text-muted-foreground/80">
                               {" · "}
-                              {volPct}% du volume
+                              {volPct}% {t("stats.volShareLabel")}
                             </span>
-                            <span className="block text-xs">({company.total} cmd{company.total > 1 ? "s" : ""})</span>
+                            <span className="block text-xs">({company.total})</span>
                           </span>
                         </div>
                         <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -336,7 +401,7 @@ export default function MerchantStats() {
                     );
                   })}
                   {!(stats?.deliveryRateByCompany?.length) && (
-                    <p className="text-sm text-muted-foreground">Données insuffisantes</p>
+                    <p className="text-sm text-muted-foreground">{t("stats.insufficientData")}</p>
                   )}
                 </div>
               )}
@@ -345,7 +410,7 @@ export default function MerchantStats() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Top Produits</CardTitle>
+              <CardTitle>{t("stats.topProductsTitle")}</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -367,19 +432,18 @@ export default function MerchantStats() {
                       <div>
                         <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {product.sales} ventes · <span className="font-medium text-foreground">{caPct}%</span> du CA
-                          top produits
+                          {t("stats.salesLine", { sales: product.sales, caPct })}
                         </p>
                       </div>
                       <div className="text-right">
                         <div className="font-bold">{product.revenue.toLocaleString("fr-DZ")} DZD</div>
-                        <p className="text-xs text-muted-foreground">{caPct}% du CA (top)</p>
+                        <p className="text-xs text-muted-foreground">{t("stats.caPctLine", { pct: caPct })}</p>
                       </div>
                     </div>
                     );
                   })}
                   {!(stats?.topProducts?.length) && (
-                    <p className="text-sm text-muted-foreground">Aucun produit trouvé</p>
+                    <p className="text-sm text-muted-foreground">{t("stats.noProducts")}</p>
                   )}
                 </div>
               )}

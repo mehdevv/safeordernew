@@ -3,8 +3,10 @@
  * Barre du haut : marque statique + switch Marchand / Client (même mode connexion ou inscription).
  */
 import { useLayoutEffect, useState, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import "@/styles/auth.css";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 
 export function LogoMark({ variant = "dark", size = 52 }: { variant?: "dark" | "light"; size?: number }) {
   return (
@@ -49,8 +51,10 @@ export function Field({
   pwdToggle?: boolean;
   autoFocus?: boolean;
 }) {
+  const { t } = useTranslation("auth");
   const [shown, setShown] = useState(false);
   const realType = pwdToggle ? (shown ? "text" : "password") : type;
+  const pwdAria = shown ? t("field.hidePassword") : t("field.showPassword");
   return (
     <div className="reg-field">
       <label>{label}</label>
@@ -71,7 +75,7 @@ export function Field({
             type="button"
             className="reg-input-icon"
             onClick={() => setShown(s => !s)}
-            aria-label={shown ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+            aria-label={pwdAria}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
@@ -99,12 +103,14 @@ export function SelectField({
   required?: boolean;
   placeholder?: string;
 }) {
+  const { t } = useTranslation("auth");
+  const ph = placeholder === "Choisir…" ? t("field.selectPlaceholder") : placeholder;
   return (
     <div className="reg-field">
       <label>{label}</label>
       <div className="reg-input-wrap">
         <select value={value} required={required} onChange={e => onChange(e.target.value)}>
-          <option value="">{placeholder}</option>
+          <option value="">{ph}</option>
           {options.map(o => (
             <option key={o.value} value={o.value}>
               {o.label}
@@ -124,8 +130,9 @@ export function Spinner() {
 }
 
 export function BrandPanel() {
+  const { t } = useTranslation("auth");
   return (
-    <section className="reg-panel brand-panel" aria-label="À propos de SafeOrder">
+    <section className="reg-panel brand-panel" aria-label={t("shell.aboutBrand")}>
       <div className="reg-brand-bg">
         <div className="ring r1" />
         <div className="ring r2" />
@@ -138,8 +145,8 @@ export function BrandPanel() {
       <div className="reg-floating-card fc-1">
         <div className="pulse" />
         <div>
-          <div className="title">Colis #SO-48201</div>
-          <div className="sub">En livraison · Alger</div>
+          <div className="title">{t("brandPanel.parcelTitle")}</div>
+          <div className="sub">{t("brandPanel.parcelSub")}</div>
         </div>
       </div>
       <div className="reg-floating-card fc-2">
@@ -147,8 +154,8 @@ export function BrandPanel() {
           <polyline points="20 6 9 17 4 12" />
         </svg>
         <div>
-          <div className="title">Retour accepté</div>
-          <div className="sub">Remboursement sous 2 h</div>
+          <div className="title">{t("brandPanel.returnTitle")}</div>
+          <div className="sub">{t("brandPanel.returnSub")}</div>
         </div>
       </div>
 
@@ -161,12 +168,13 @@ export function BrandPanel() {
         </div>
 
         <h2 className="reg-brand-title">
-          Chaque colis<br />
-          <em>arrive,</em> ou revient
+          {t("brandPanel.headline1")}
           <br />
-          vers vous.
+          <em>{t("brandPanel.headline2")}</em> {t("brandPanel.headline3")}
+          <br />
+          {t("brandPanel.headline4")}
         </h2>
-        <p className="reg-brand-slogan">Suivez vos commandes en temps réel. Gérez les retours sans friction.</p>
+        <p className="reg-brand-slogan">{t("brandPanel.slogan")}</p>
       </div>
     </section>
   );
@@ -180,6 +188,7 @@ interface AuthShellProps {
 }
 
 export default function AuthShell({ activeRole, authMode, children }: AuthShellProps) {
+  const { t } = useTranslation("auth");
   const [ready, setReady] = useState(false);
   const [, navigate] = useLocation();
   useLayoutEffect(() => {
@@ -199,21 +208,22 @@ export default function AuthShell({ activeRole, authMode, children }: AuthShellP
           <LogoMark size={28} />
           <span>SafeOrder</span>
         </div>
-        <div className="reg-topbar-actions">
-          <div className={switchClass} role="group" aria-label="Choisir l’espace">
+        <div className="reg-topbar-actions" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <LanguageSwitch />
+          <div className={switchClass} role="group" aria-label={t("shell.chooseSpace")}>
             <button
               type="button"
               className={activeRole === "merchant" ? "active" : undefined}
               onClick={() => activeRole !== "merchant" && navigate(merchantHref)}
             >
-              Marchand
+              {t("shell.merchant")}
             </button>
             <button
               type="button"
               className={activeRole === "client" ? "active" : undefined}
               onClick={() => activeRole !== "client" && navigate(clientHref)}
             >
-              Client
+              {t("shell.client")}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { useLoginClient, useSendClientOtp } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -24,6 +25,8 @@ export default function ClientLoginPage() {
 }
 
 function ClientLoginForm({ onSuccess }: { onSuccess: () => void }) {
+  const { t } = useTranslation("auth");
+  const { t: te } = useTranslation("errors");
   const { toast } = useToast();
   const qc = useQueryClient();
   const [phone, setPhone] = useState("");
@@ -43,11 +46,11 @@ function ClientLoginForm({ onSuccess }: { onSuccess: () => void }) {
       const res = await sendOtp.mutateAsync({ data: { phone } });
       setOtpSent(true);
       toast({
-        title: "Code envoyé",
-        description: `Un SMS a été simulé. Code démo : ${res.demoOtp}`,
+        title: te("otpSentTitle"),
+        description: te("otpSentDesc", { code: res.demoOtp }),
       });
     } catch {
-      toast({ title: "Erreur", description: "Numéro de téléphone invalide.", variant: "destructive" });
+      toast({ title: te("invalidPhoneTitle"), description: te("invalidPhoneDesc"), variant: "destructive" });
     }
   }
 
@@ -64,23 +67,21 @@ function ClientLoginForm({ onSuccess }: { onSuccess: () => void }) {
       onSuccess();
     } catch {
       toast({
-        title: "Connexion refusée",
-        description: "Code OTP incorrect. Démo : 123456",
+        title: te("loginRefusedTitle"),
+        description: te("loginRefusedDesc"),
         variant: "destructive",
       });
     }
   };
 
   return (
-    <section className="reg-panel form-panel" aria-label="Connexion client" data-form="customer">
+    <section className="reg-panel form-panel" aria-label={t("clientLogin.aria")} data-form="customer">
       <div className="reg-form-inner">
-        <h1 className="reg-form-title">Connexion avec votre téléphone</h1>
-        <p style={{ fontSize: 14, color: "var(--rb-ink-3)", margin: "-12px 0 20px" }}>
-          Entrez votre numéro et le code reçu par SMS. Aucune inscription nécessaire.
-        </p>
+        <h1 className="reg-form-title">{t("clientLogin.title")}</h1>
+        <p style={{ fontSize: 14, color: "var(--rb-ink-3)", margin: "-12px 0 20px" }}>{t("clientLogin.subtitle")}</p>
         <form className="reg-form" onSubmit={submit} noValidate>
           <Field
-            label="Numéro de téléphone"
+            label={t("clientLogin.phone")}
             type="tel"
             value={phone}
             onChange={setPhone}
@@ -97,10 +98,10 @@ function ClientLoginForm({ onSuccess }: { onSuccess: () => void }) {
             disabled={!canSendOtp || sendOtp.isPending}
             onClick={handleSendOtp}
           >
-            {sendOtp.isPending ? <Spinner /> : otpSent ? "Renvoyer le code" : "Recevoir le code par SMS"}
+            {sendOtp.isPending ? <Spinner /> : otpSent ? t("clientLogin.resendSms") : t("clientLogin.sendSms")}
           </button>
           <Field
-            label="Code OTP (6 chiffres)"
+            label={t("clientLogin.otp")}
             type="text"
             value={otp}
             onChange={v => setOtp(v.replace(/\D/g, "").slice(0, 6))}
@@ -111,12 +112,12 @@ function ClientLoginForm({ onSuccess }: { onSuccess: () => void }) {
             autoComplete="one-time-code"
           />
           <button className="reg-btn-primary" type="submit" disabled={!canSubmit || loginClient.isPending}>
-            {loginClient.isPending ? <Spinner /> : "Se connecter"}
+            {loginClient.isPending ? <Spinner /> : t("clientLogin.submit")}
           </button>
         </form>
         <p style={{ textAlign: "center", marginTop: 18, fontSize: 13, color: "var(--rb-ink-3)" }}>
           <Link href="/track" style={{ color: "var(--rb-blue-600)", fontWeight: 600 }}>
-            Suivre une commande sans compte →
+            {t("clientLogin.trackNoAccount")}
           </Link>
         </p>
       </div>

@@ -1,0 +1,122 @@
+{
+  "nav": {
+    "mainAria": "Navigation principale",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "about": "À propos",
+    "startFree": "Démarrer gratuitement",
+    "language": "Langue",
+    "menuAria": "Menu"
+  },
+  "hero": {
+    "badge": "La confiance au cœur du e-commerce algérien",
+    "title1": "Gérez vos commandes.",
+    "title2": "Réduisez vos retours.",
+    "desc": "SafeOrder connecte marchands et acheteurs avec un dépôt intelligent, un suivi en temps réel et des analyses pour sécuriser chaque transaction.",
+    "ctaMerchant": "Créer un compte marchand",
+    "ctaSafePay": "Découvrir Safe Pay",
+    "mockupCaption": "Aperçu tableau de bord",
+    "floatTitle": "Taux de retour réduit",
+    "floatSub": "En moyenne chez nos marchands",
+    "floatValue": "40%",
+    "mockupAlt": "Aperçu du tableau de bord SafeOrder"
+  },
+  "about": {
+    "eyebrow": "Pour commencer",
+    "title": "Choisissez votre espace",
+    "desc": "Même interface soignée que dans l’app : parcours dédié marchand ou client."
+  },
+  "roles": {
+    "merchantTitle": "E-commerçant",
+    "merchantDesc": "Gérez vos commandes, réduisez vos retours et augmentez votre chiffre d’affaires grâce à notre écosystème de confiance.",
+    "clientTitle": "Client",
+    "clientDesc": "Commandez en toute confiance, suivez vos colis en temps réel et récupérez votre caution systématiquement."
+  },
+  "features": {
+    "eyebrow": "Produit",
+    "title": "L’écosystème de confiance",
+    "desc": "Des outils pensés pour le e-commerce en Algérie — cartes et typographie comme dans votre espace marchand.",
+    "safePayTitle": "Safe Pay",
+    "safePayDesc": "Dépôt intelligent de 10 % remboursable à la livraison. Protégez-vous contre les fausses commandes tout en rassurant vos clients.",
+    "safePayLi1": "Intégration transparente",
+    "safePayLi2": "Remboursement automatique",
+    "trackTitle": "Safe Track",
+    "trackDesc": "Suivi en temps réel avec 6 statuts précis. Ne laissez plus vos clients dans le flou.",
+    "trackLi1": "SMS & notifications",
+    "trackLi2": "Connexion APIs livreurs",
+    "trustTitle": "Trust Score",
+    "trustDesc": "Score de confiance bidirectionnel basé sur l’historique réel. Bâtissez votre réputation.",
+    "trustLi1": "Évaluation post-livraison",
+    "trustLi2": "Badge de confiance public",
+    "iaTitle": "Safe Insights IA",
+    "iaDesc": "Analyse prédictive : repérez les zones à risque et optimisez vos opérations logistiques.",
+    "iaLi1": "Prédiction des retours",
+    "iaLi2": "Tableaux de bord avancés"
+  },
+  "stats": {
+    "title": "Impact mesurable",
+    "sub": "Des indicateurs suivis dans la même logique que votre tableau de bord.",
+    "r1v": "50%",
+    "r1l": "Taux de retour réduit",
+    "r2v": "6",
+    "r2l": "Statuts en temps réel",
+    "r3v": "4+",
+    "r3l": "Livreurs intégrés",
+    "r4v": "10k+",
+    "r4l": "Commandes sécurisées"
+  },
+  "journey": {
+    "title": "Un processus fluide",
+    "desc": "De la commande à la livraison, chaque étape est structurée comme dans l’application.",
+    "s1t": "Création",
+    "s1d": "Le marchand crée la commande",
+    "s2t": "Caution",
+    "s2d": "Le client dépose 10 % via Safe Pay",
+    "s3t": "Suivi",
+    "s3d": "Tracking activé en temps réel",
+    "s4t": "Livraison",
+    "s4d": "Colis livré, caution remboursée"
+  },
+  "partners": {
+    "title": "Partenaires logistiques intégrés"
+  },
+  "testimonials": {
+    "title": "Ils nous font confiance",
+    "desc": "Retours d’expérience de marchands déjà équipés.",
+    "q1": "« Avant SafeOrder, on perdait un temps fou avec les retours injustifiés. La caution Safe Pay a changé notre clientèle : des acheteurs sérieux. »",
+    "n1": "Amine K.",
+    "r1": "Gérant, TechDz",
+    "q2": "« L’intégration livreurs et les SMS ont réduit les appels au support. Le tableau de bord nous aide à cibler nos campagnes. »",
+    "n2": "Sara M.",
+    "r2": "CEO, ModeAlgerie"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "desc": "Les réponses aux questions les plus courantes avant de vous lancer.",
+    "q1": "Comment fonctionne le dépôt Safe Pay ?",
+    "a1": "Lorsqu'un client passe commande, il reçoit un lien sécurisé pour déposer 10 % du montant total. Ce montant est conservé sur un compte séquestre. Une fois la livraison confirmée, le montant est déduit du reste à payer au livreur ou remboursé selon les conditions.",
+    "q2": "Que se passe-t-il si le client refuse la livraison ?",
+    "a2": "Si le refus est injustifié ou si le client est injoignable, le dépôt de 10 % est transféré au marchand pour couvrir les frais de retour logistique. Si le refus est justifié (produit non conforme), le dépôt est restitué au client après vérification.",
+    "q3": "Comment le Trust Score est-il calculé ?",
+    "a3": "Le Trust Score prend en compte l'historique des transactions, le taux d'acceptation des livraisons, la rapidité des dépôts Safe Pay, et les évaluations laissées après chaque commande. Un algorithme ajuste le score pour prévenir les fraudes.",
+    "q4": "Quelles sociétés de livraison sont compatibles ?",
+    "a4": "SafeOrder est intégré avec Yalidine, ZR Express, Maystro et World Express. Une API permet d'ajouter d'autres transporteurs locaux."
+  },
+  "cta": {
+    "title": "Prêt à sécuriser votre e-commerce ?",
+    "desc": "Rejoignez les marchands qui ont choisi la tranquillité d'exploitation avec SafeOrder.",
+    "button": "Créer mon compte gratuitement"
+  },
+  "footer": {
+    "desc": "Gestion de commandes et livraisons sécurisées. Le même socle technique que votre espace marchand et client.",
+    "linksTitle": "Liens utiles",
+    "legalTitle": "Légal",
+    "about": "À propos",
+    "pricing": "Tarifs",
+    "merchantLogin": "Connexion marchand",
+    "cgu": "CGU",
+    "privacy": "Confidentialité",
+    "copy": "© {{year}} SafeOrder. Tous droits réservés.",
+    "location": "Alger, Algérie"
+  }
+}

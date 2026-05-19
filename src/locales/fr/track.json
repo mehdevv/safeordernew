@@ -1,0 +1,20 @@
+{
+  "title": "SafeTrack",
+  "subtitle": "Suivez votre commande en temps réel. Entrez votre code de suivi pour voir l'état de votre livraison.",
+  "cardTitle": "Suivi de commande",
+  "cardDesc": "Votre code commence par SAF-",
+  "placeholder": "SAF-XXXXXXX",
+  "submit": "Suivre ma commande",
+  "footerHint": "Vous avez passé commande ? Retrouvez votre code dans le SMS de confirmation.",
+  "notFoundTitle": "Code introuvable",
+  "notFoundBody": "Aucune commande trouvée pour le code {{code}}. Vérifiez votre code et réessayez.",
+  "retry": "Réessayer",
+  "backHome": "Accueil",
+  "resultTitle": "Suivi de commande",
+  "currentState": "État actuel",
+  "deliveryHistory": "Historique de livraison",
+  "estimatedDelivery": "Livraison estimée : {{date}}",
+  "deliveredTitle": "Votre commande est livrée !",
+  "deliveredSub": "Partagez votre expérience",
+  "review": "Avis"
+}

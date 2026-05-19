@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetClientMe, useGetClientOrders } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,18 +10,14 @@ import { ShieldCheck, Package, LogOut, Store, Hash, ExternalLink } from "lucide-
 import { activateMerchantAuth, clearClientToken } from "@/lib/client-auth";
 import { ClientAuthGuard } from "@/client/components/client-auth-guard";
 import { orderStatusBadgeClass } from "@/lib/order-status-styles";
-
-const STATUS_LABEL: Record<string, string> = {
-  confirmation: "Confirmation",
-  preparation: "Préparation",
-  dispatch: "Expédition",
-  en_livraison: "En livraison",
-  livre: "Livré",
-  retour: "Retour",
-};
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import i18n from "@/i18n";
 
 export default function ClientDashboard() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation("client");
+  const { t: tc } = useTranslation("common");
+  const dateLocale = i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ";
 
   const { data: client, isLoading } = useGetClientMe();
   const phoneDigits = client?.phoneDigits?.replace(/\D/g, "") ?? "";
@@ -41,25 +38,28 @@ export default function ClientDashboard() {
     <ClientAuthGuard>
       {isLoading || !client ? (
         <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="animate-pulse text-muted-foreground">Chargement...</div>
+          <div className="animate-pulse text-muted-foreground">{t("guardLoading")}</div>
         </div>
       ) : (
         <div className="min-h-screen bg-background pb-12">
           <div className="bg-primary text-primary-foreground px-4 py-6">
             <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="font-bold text-lg">Mon espace client</p>
+                <p className="font-bold text-lg">{t("dashboard.title")}</p>
                 <p className="text-primary-foreground/90 text-sm font-mono truncate">{client.phone}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-primary-foreground shrink-0 hover:bg-primary-foreground/20"
-                onClick={handleLogout}
-                aria-label="Déconnexion"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-2 shrink-0">
+                <LanguageSwitch />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-primary-foreground hover:bg-primary-foreground/20"
+                  onClick={handleLogout}
+                  aria-label={t("dashboard.logoutAria")}
+                >
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -67,21 +67,18 @@ export default function ClientDashboard() {
             <div className="bg-card rounded-xl border shadow-sm p-4 flex items-center gap-3">
               <ShieldCheck className="h-6 w-6 text-primary shrink-0" />
               <div>
-                <p className="font-semibold text-sm">Compte lié à votre numéro</p>
-                <p className="text-xs text-muted-foreground">
-                  Commandes, boutiques et codes de suivi associés à ce téléphone uniquement.
-                </p>
+                <p className="font-semibold text-sm">{t("dashboard.linkedTitle")}</p>
+                <p className="text-xs text-muted-foreground">{t("dashboard.linkedDesc")}</p>
               </div>
             </div>
 
-            {/* Boutiques */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Store className="h-4 w-4" />
-                  Boutiques achetées
+                  {t("dashboard.shopsTitle")}
                 </CardTitle>
-                <CardDescription>Comptes marchands chez qui vous avez commandé</CardDescription>
+                <CardDescription>{t("dashboard.shopsDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 {ordersLoading ? (
@@ -89,7 +86,7 @@ export default function ClientDashboard() {
                 ) : uniqueShops.length ? (
                   <ul className="flex flex-wrap gap-2">
                     {uniqueShops.map(name => (
-                      <li key={name}>
+                      <li key={name as string}>
                         <Badge variant="secondary" className="font-medium">
                           {name}
                         </Badge>
@@ -97,19 +94,18 @@ export default function ClientDashboard() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune commande pour ce numéro.</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.noShops")}</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* Codes de suivi */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Hash className="h-4 w-4" />
-                  Codes de suivi
+                  {t("dashboard.codesTitle")}
                 </CardTitle>
-                <CardDescription>Tous vos colis SafeTrack</CardDescription>
+                <CardDescription>{t("dashboard.codesDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 {ordersLoading ? (
@@ -122,30 +118,29 @@ export default function ClientDashboard() {
                     >
                       <div className="min-w-0">
                         <p className="font-mono font-semibold truncate">{o.trackingCode}</p>
-                        <p className="text-xs text-muted-foreground truncate">{o.product?.name ?? "Produit"}</p>
+                        <p className="text-xs text-muted-foreground truncate">{o.product?.name ?? tc("product")}</p>
                       </div>
                       <Link href={`/track/${encodeURIComponent(o.trackingCode)}`}>
                         <Button variant="ghost" size="sm" className="shrink-0 gap-1 h-8 px-2">
                           <ExternalLink className="h-3.5 w-3.5" />
-                          Suivre
+                          {t("dashboard.track")}
                         </Button>
                       </Link>
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucun code pour l’instant.</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.noCodes")}</p>
                 )}
               </CardContent>
             </Card>
 
-            {/* Commandes */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Package className="h-4 w-4" />
-                  Mes commandes
+                  {t("dashboard.ordersTitle")}
                 </CardTitle>
-                <CardDescription>Historique pour {client.phone}</CardDescription>
+                <CardDescription>{t("dashboard.ordersDesc", { phone: client.phone })}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {ordersLoading ? (
@@ -156,34 +151,31 @@ export default function ClientDashboard() {
                 ) : orders?.length ? (
                   orders.map(order => {
                     const statusClass = orderStatusBadgeClass(order.status);
+                    const statusLabel = tc(`orderStatus.${order.status}` as const);
                     return (
                       <div key={order.id} className="rounded-lg border p-3 space-y-2">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <p className="font-semibold text-sm truncate">{order.product?.name ?? "Produit"}</p>
+                            <p className="font-semibold text-sm truncate">{order.product?.name ?? tc("product")}</p>
                             <p className="text-xs text-muted-foreground truncate">{order.shopName}</p>
                             <p className="font-mono text-xs text-muted-foreground mt-0.5">{order.trackingCode}</p>
                           </div>
-                          <Badge className={`text-xs shrink-0 ${statusClass}`}>
-                            {STATUS_LABEL[order.status] ?? order.status}
-                          </Badge>
+                          <Badge className={`text-xs shrink-0 ${statusClass}`}>{statusLabel}</Badge>
                         </div>
                         <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>{new Date(order.createdAt).toLocaleDateString("fr-DZ")}</span>
-                          <span className="font-semibold text-foreground">
-                            {order.totalPrice.toLocaleString("fr-DZ")} DZD
-                          </span>
+                          <span>{new Date(order.createdAt).toLocaleDateString(dateLocale)}</span>
+                          <span className="font-semibold text-foreground">{order.totalPrice.toLocaleString("fr-DZ")} DZD</span>
                         </div>
                         <div className="flex gap-2">
                           <Link href={`/track/${encodeURIComponent(order.trackingCode)}`} className="flex-1">
                             <Button variant="outline" size="sm" className="w-full">
-                              Suivre
+                              {t("dashboard.track")}
                             </Button>
                           </Link>
                           {order.status === "livre" && (
                             <Link href={`/client/feedback/${order.id}`}>
                               <Button size="sm" variant="secondary">
-                                Avis
+                                {t("dashboard.review")}
                               </Button>
                             </Link>
                           )}
@@ -192,14 +184,14 @@ export default function ClientDashboard() {
                     );
                   })
                 ) : (
-                  <p className="text-sm text-muted-foreground">Aucune commande avec ce numéro.</p>
+                  <p className="text-sm text-muted-foreground">{t("dashboard.noOrders")}</p>
                 )}
               </CardContent>
             </Card>
 
             <Link href="/track" className="block">
               <Button variant="outline" className="w-full">
-                Suivre un autre colis (code)
+                {t("dashboard.trackOther")}
               </Button>
             </Link>
           </div>

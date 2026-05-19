@@ -1,7 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { MerchantLayout } from "@/components/merchant/layout";
-import { 
-  useGetInsights,
-} from "@workspace/api-client-react";
+import { useGetInsights } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,14 +8,22 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { BrainCircuit, AlertCircle, Lightbulb, CheckCircle2 } from "lucide-react";
 
 export default function MerchantInsights() {
+  const { t } = useTranslation("merchant");
+  const { t: tc } = useTranslation("common");
   const { data: insights, isLoading } = useGetInsights();
 
   const getPriorityBadge = (priority: string) => {
-    switch(priority) {
-      case 'high': return <Badge className="bg-destructive hover:bg-destructive/90">Haute</Badge>;
-      case 'medium': return <Badge className="bg-warning hover:bg-warning/90 text-warning-foreground">Moyenne</Badge>;
-      case 'low': return <Badge variant="secondary">Basse</Badge>;
-      default: return null;
+    switch (priority) {
+      case "high":
+        return <Badge className="bg-destructive hover:bg-destructive/90">{t("insights.priorityHigh")}</Badge>;
+      case "medium":
+        return (
+          <Badge className="bg-warning hover:bg-warning/90 text-warning-foreground">{t("insights.priorityMedium")}</Badge>
+        );
+      case "low":
+        return <Badge variant="secondary">{t("insights.priorityLow")}</Badge>;
+      default:
+        return null;
     }
   };
 
@@ -28,8 +35,8 @@ export default function MerchantInsights() {
             <BrainCircuit className="h-8 w-8 text-accent" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Safe Insights</h1>
-            <p className="text-muted-foreground">Analyse IA de votre pipeline et recommandations d'optimisation</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t("insights.title")}</h1>
+            <p className="text-muted-foreground">{t("insights.subtitle")}</p>
           </div>
         </div>
 
@@ -38,20 +45,27 @@ export default function MerchantInsights() {
             <CardHeader className="bg-accent/5 pb-4">
               <CardTitle className="flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-accent" />
-                Actions Recommandées
+                {t("insights.actionsTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
               {isLoading ? (
-                <div className="space-y-3"><Skeleton className="h-16 w-full" /><Skeleton className="h-16 w-full" /></div>
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
               ) : (
                 <div className="space-y-4">
-                  {insights?.improvements?.length ? insights.improvements.map((item, i) => (
-                    <div key={i} className="flex gap-4 items-start p-3 rounded-lg bg-background border">
-                      <div className="mt-0.5">{getPriorityBadge(item.priority)}</div>
-                      <p className="text-sm">{item.text}</p>
-                    </div>
-                  )) : <p className="text-sm text-muted-foreground">Aucune recommandation pour le moment.</p>}
+                  {insights?.improvements?.length ? (
+                    insights.improvements.map((item, i) => (
+                      <div key={i} className="flex gap-4 items-start p-3 rounded-lg bg-background border">
+                        <div className="mt-0.5">{getPriorityBadge(item.priority)}</div>
+                        <p className="text-sm">{item.text}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{t("insights.emptyImprovements")}</p>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -61,22 +75,29 @@ export default function MerchantInsights() {
             <CardHeader className="bg-success/5 pb-4">
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-success" />
-                Vos Points Forts
+                {t("insights.strengthsTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
               {isLoading ? (
-                <div className="space-y-3"><Skeleton className="h-16 w-full" /><Skeleton className="h-16 w-full" /></div>
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
               ) : (
                 <div className="space-y-4">
-                  {insights?.strengths?.length ? insights.strengths.map((item, i) => (
-                    <div key={i} className="flex gap-4 items-start p-3 rounded-lg bg-background border border-success/10">
-                      <div className="bg-success/20 p-1.5 rounded-full mt-0.5">
-                        <CheckCircle2 className="h-3 w-3 text-success" />
+                  {insights?.strengths?.length ? (
+                    insights.strengths.map((item, i) => (
+                      <div key={i} className="flex gap-4 items-start p-3 rounded-lg bg-background border border-success/10">
+                        <div className="bg-success/20 p-1.5 rounded-full mt-0.5">
+                          <CheckCircle2 className="h-3 w-3 text-success" />
+                        </div>
+                        <p className="text-sm">{item.text}</p>
                       </div>
-                      <p className="text-sm">{item.text}</p>
-                    </div>
-                  )) : <p className="text-sm text-muted-foreground">Analyse en cours...</p>}
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{t("insights.analyzing")}</p>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -85,24 +106,24 @@ export default function MerchantInsights() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Analyse IA des Retours</CardTitle>
-            <CardDescription>
-              Détection automatique des causes récurrentes de retours clients
-            </CardDescription>
+            <CardTitle>{t("insights.returnAnalysisTitle")}</CardTitle>
+            <CardDescription>{t("insights.returnAnalysisDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Tracking</TableHead>
-                  <TableHead>Cause déclarée</TableHead>
-                  <TableHead>Suggestion IA</TableHead>
+                  <TableHead>{t("insights.colTracking")}</TableHead>
+                  <TableHead>{t("insights.colCause")}</TableHead>
+                  <TableHead>{t("insights.colSuggestion")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-8">Chargement...</TableCell>
+                    <TableCell colSpan={3} className="text-center py-8">
+                      {tc("loading")}
+                    </TableCell>
                   </TableRow>
                 ) : insights?.returnAnalysis && insights.returnAnalysis.length > 0 ? (
                   insights.returnAnalysis.map((item, i) => (
@@ -119,14 +140,15 @@ export default function MerchantInsights() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">Pas assez de données de retour pour l'analyse IA.</TableCell>
+                    <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                      {t("insights.emptyReturns")}
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
-
       </div>
     </MerchantLayout>
   );

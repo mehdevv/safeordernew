@@ -1,5 +1,6 @@
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,7 @@ import "@/lib/auth"; // init auth
 
 function ClientHomeRedirect() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation("common");
   useEffect(() => {
     if (isClientAuthenticated()) {
       navigate("/client/dashboard");
@@ -39,7 +41,7 @@ function ClientHomeRedirect() {
   }, [navigate]);
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <p className="text-sm text-muted-foreground animate-pulse">Redirection…</p>
+      <p className="text-sm text-muted-foreground animate-pulse">{t("redirecting")}</p>
     </div>
   );
 }

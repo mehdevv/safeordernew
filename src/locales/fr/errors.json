@@ -1,0 +1,22 @@
+{
+  "otpSentTitle": "Code envoyé",
+  "otpSentDesc": "Un SMS a été simulé. Code démo : {{code}}",
+  "invalidPhoneTitle": "Erreur",
+  "invalidPhoneDesc": "Numéro de téléphone invalide.",
+  "loginRefusedTitle": "Connexion refusée",
+  "loginRefusedDesc": "Code OTP incorrect. Démo : 123456",
+  "genericErrorTitle": "Erreur",
+  "orderCreateFail": "Impossible de passer la commande. Réessayez.",
+  "profileUpdatedTitle": "Profil mis à jour",
+  "profileUpdatedDesc": "Vos informations ont été enregistrées.",
+  "profileUpdateFailDesc": "Impossible de mettre à jour le profil.",
+  "orderStatusUpdated": "Statut mis à jour",
+  "productUpdated": "Produit mis à jour",
+  "productCreated": "Produit créé !",
+  "productSaveFail": "Impossible d'enregistrer le produit.",
+  "productArchived": "Produit archivé",
+  "productArchiveFail": "Impossible d'archiver le produit.",
+  "linkCopiedTitle": "Lien copié !",
+  "linkCopiedDesc": "Partagez ce lien avec vos clients.",
+  "feedbackSubmitFail": "Impossible d'envoyer votre avis. Réessayez."
+}

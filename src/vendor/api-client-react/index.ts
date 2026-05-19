@@ -38,6 +38,8 @@ let mockProducts: ProductRow[] = [
 
 let nextProductId = 100;
 
+type RecentInsightTag = "safe_pay" | "call_required" | "new_customer" | "loyal" | "high_risk";
+
 type OrderRow = {
   id: number;
   trackingCode: string;
@@ -52,17 +54,19 @@ type OrderRow = {
   createdAt: string;
   product?: { name: string };
   shopName: string;
+  /** Hint for « Commandes récentes » (point + pastille) */
+  insightTag?: RecentInsightTag;
 };
 
 let mockOrders: OrderRow[] = [
-  { id: 501, trackingCode: "SO-DEMO-001", clientFirstName: "Samir", clientLastName: "K.", clientPhone: "0555123456", wilaya: "Alger", commune: "Hydra", totalPrice: 12900, safePayStatus: "pending", status: "preparation", createdAt: new Date().toISOString(), product: { name: "Casque Bluetooth Pro" }, shopName: "Boutique Yacine" },
-  { id: 502, trackingCode: "SO-DEMO-002", clientFirstName: "Lina", clientLastName: "M.", clientPhone: "0661987654", wilaya: "Oran", commune: "Es Senia", totalPrice: 4500, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 3).toISOString(), product: { name: "Chargeur USB-C 65W" }, shopName: "Boutique Yacine" },
-  { id: 503, trackingCode: "SO-DEMO-003", clientFirstName: "Karim", clientLastName: "B.", clientPhone: "0770123456", wilaya: "Constantine", commune: "El Khroub", totalPrice: 12900, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 8).toISOString(), product: { name: "Casque Bluetooth Pro" }, shopName: "Boutique Yacine" },
-  { id: 504, trackingCode: "SO-DEMO-004", clientFirstName: "Samir", clientLastName: "K.", clientPhone: "0555123456", wilaya: "Alger", commune: "Bab Ezzouar", totalPrice: 4500, safePayStatus: "pending", status: "dispatch", createdAt: new Date(Date.now() - 86400000).toISOString(), product: { name: "Chargeur USB-C 65W" }, shopName: "Tech Store Alger" },
+  { id: 501, trackingCode: "SO-DEMO-001", clientFirstName: "Samir", clientLastName: "K.", clientPhone: "0555123456", wilaya: "Alger", commune: "Hydra", totalPrice: 12900, safePayStatus: "pending", status: "preparation", createdAt: new Date().toISOString(), product: { name: "Casque Bluetooth Pro" }, shopName: "Boutique Yacine", insightTag: "call_required" },
+  { id: 502, trackingCode: "SO-DEMO-002", clientFirstName: "Lina", clientLastName: "M.", clientPhone: "0661987654", wilaya: "Oran", commune: "Es Senia", totalPrice: 4500, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 3).toISOString(), product: { name: "Chargeur USB-C 65W" }, shopName: "Boutique Yacine", insightTag: "safe_pay" },
+  { id: 503, trackingCode: "SO-DEMO-003", clientFirstName: "Karim", clientLastName: "B.", clientPhone: "0770123456", wilaya: "Constantine", commune: "El Khroub", totalPrice: 12900, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 8).toISOString(), product: { name: "Casque Bluetooth Pro" }, shopName: "Boutique Yacine", insightTag: "new_customer" },
+  { id: 504, trackingCode: "SO-DEMO-004", clientFirstName: "Samir", clientLastName: "K.", clientPhone: "0555123456", wilaya: "Alger", commune: "Bab Ezzouar", totalPrice: 4500, safePayStatus: "pending", status: "dispatch", createdAt: new Date(Date.now() - 86400000).toISOString(), product: { name: "Chargeur USB-C 65W" }, shopName: "Tech Store Alger", insightTag: "loyal" },
   /** Démo dashboard client — connexion avec 0555555555 ou 055555555 + OTP */
-  { id: 505, trackingCode: "SO-MOCK-555-01", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Blida", commune: "Blida", totalPrice: 8900, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 5).toISOString(), product: { name: "Écouteurs sans fil TWS" }, shopName: "Boutique Yacine" },
-  { id: 506, trackingCode: "SO-MOCK-555-02", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Tipaza", commune: "Koléa", totalPrice: 3200, safePayStatus: "pending", status: "en_livraison", createdAt: new Date(Date.now() - 86400000 * 1).toISOString(), product: { name: "Coque smartphone transparente" }, shopName: "Tech Store Alger" },
-  { id: 507, trackingCode: "SO-MOCK-555-03", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Alger", commune: "Dar El Beïda", totalPrice: 15600, safePayStatus: "pending", status: "preparation", createdAt: new Date(Date.now() - 3600000 * 6).toISOString(), product: { name: "Montre connectée Sport" }, shopName: "Mode & Tech Oran" },
+  { id: 505, trackingCode: "SO-MOCK-555-01", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Blida", commune: "Blida", totalPrice: 8900, safePayStatus: "paid", status: "livre", createdAt: new Date(Date.now() - 86400000 * 5).toISOString(), product: { name: "Écouteurs sans fil TWS" }, shopName: "Boutique Yacine", insightTag: "high_risk" },
+  { id: 506, trackingCode: "SO-MOCK-555-02", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Tipaza", commune: "Koléa", totalPrice: 3200, safePayStatus: "pending", status: "en_livraison", createdAt: new Date(Date.now() - 86400000 * 1).toISOString(), product: { name: "Coque smartphone transparente" }, shopName: "Tech Store Alger", insightTag: "safe_pay" },
+  { id: 507, trackingCode: "SO-MOCK-555-03", clientFirstName: "Amel", clientLastName: "R.", clientPhone: "0555555555", wilaya: "Alger", commune: "Dar El Beïda", totalPrice: 15600, safePayStatus: "pending", status: "preparation", createdAt: new Date(Date.now() - 3600000 * 6).toISOString(), product: { name: "Montre connectée Sport" }, shopName: "Mode & Tech Oran", insightTag: "new_customer" },
 ];
 
 let mockMerchant = {
@@ -73,7 +77,7 @@ let mockMerchant = {
   wilaya: "Alger",
   address: "Rue, Cité, N° 12 — Bab Ezzouar",
   status: "active" as const,
-  trustScore: 94,
+  trustScore: 87,
   merchantCode: "MRCH-DEMO-01",
   email: "yacine@boutique.dz",
 };
@@ -275,11 +279,15 @@ export function useGetDashboardStats() {
   return useQuery({
     queryKey: ["stub", "dashboard-stats"],
     queryFn: async () => ({
-      ordersToday: 8,
-      ordersTodayDelta: 2,
+      ordersToday: 24,
+      ordersTodayDelta: 3,
+      inDeliveryCount: 7,
+      urgentInDelivery: 2,
+      returnsCount: 3,
+      trustScore: mockMerchant.trustScore,
+      trustScoreDeltaMonth: 2,
       revenueMonth: 245000,
       deliveryRate: 96,
-      trustScore: mockMerchant.trustScore,
     }),
   });
 }
@@ -313,9 +321,9 @@ export function useGetRecentOrders() {
           id: o.id,
           clientFirstName: o.clientFirstName,
           clientLastName: o.clientLastName,
-          trackingCode: o.trackingCode,
+          wilaya: o.wilaya,
           totalPrice: o.totalPrice,
-          status: o.status,
+          insightTag: o.insightTag ?? "new_customer",
         })),
   });
 }
@@ -340,6 +348,14 @@ export function useGetPerformanceStats(_args?: { period?: string }) {
         { name: "Casque Bluetooth Pro", sales: 42, revenue: 541800 },
         { name: "Chargeur USB-C 65W", sales: 38, revenue: 171000 },
       ],
+      feedbackSentiment: {
+        positivePct: 94,
+        negativePct: 6,
+        negativeMotifs: [
+          { id: "delivery" as const, count: 4 },
+          { id: "color" as const, count: 2 },
+        ],
+      },
     }),
   });
 }

@@ -1,0 +1,29 @@
+{
+  "language": {
+    "label": "Langue",
+    "fr": "FR",
+    "ar": "AR",
+    "arLabel": "العربية",
+    "chooseAria": "Choisir la langue"
+  },
+  "brand": {
+    "tagline": "E-commerce sécurisé"
+  },
+  "menu": "Menu",
+  "loading": "Chargement...",
+  "redirecting": "Redirection…",
+  "notFound": {
+    "title": "404 — Page introuvable",
+    "body": "Cette adresse ne correspond à aucune page. Vérifiez l’URL ou retournez à l’accueil.",
+    "backHome": "Retour à l’accueil"
+  },
+  "orderStatus": {
+    "confirmation": "Confirmation",
+    "preparation": "Préparation",
+    "dispatch": "Expédition",
+    "en_livraison": "En livraison",
+    "livre": "Livré",
+    "retour": "Retour traité"
+  },
+  "product": "Produit"
+}
