@@ -16,7 +16,20 @@
     "noOrders": "لا طلبات بهذا الرقم.",
     "track": "تتبع",
     "review": "تقييم",
-    "trackOther": "تتبع طرد آخر (رمز)"
+    "trackOther": "تتبع طرد آخر (رمز)",
+    "productTestAria": "كتلة اختبار نموذج الطلب للمنتج",
+    "productTestTitle": "اختبار نموذج المنتج",
+    "productTestBadge": "MVP",
+    "productTestDesc": "قيم مطابقة للمنتج التجريبي في كتالوج التاجر (المعرّف 1). استخدم الزر لفتح نموذج الطلب العام واختبار مسار العميل.",
+    "productTestLabelName": "اسم المنتج",
+    "productTestLabelPrice": "السعر (دج)",
+    "productTestLabelRef": "المرجع",
+    "productTestLabelCategory": "الفئة",
+    "productTestValName": "Casque Bluetooth Pro",
+    "productTestValRef": "REF-1001",
+    "productTestValCategory": "Audio",
+    "productTestCurrency": "دج",
+    "productTestCta": "فتح نموذج الطلب"
   },
   "orders": {
     "backDashAria": "العودة إلى لوحة التحكم",

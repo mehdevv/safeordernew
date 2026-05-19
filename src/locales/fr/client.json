@@ -16,7 +16,20 @@
     "noOrders": "Aucune commande avec ce numéro.",
     "track": "Suivre",
     "review": "Avis",
-    "trackOther": "Suivre un autre colis (code)"
+    "trackOther": "Suivre un autre colis (code)",
+    "productTestAria": "Bloc de test du formulaire produit",
+    "productTestTitle": "Test formulaire produit",
+    "productTestBadge": "MVP",
+    "productTestDesc": "Valeurs alignées sur le produit démo du catalogue marchand (id 1). Utilisez le bouton pour ouvrir le formulaire de commande public et tester le parcours client.",
+    "productTestLabelName": "Nom du produit",
+    "productTestLabelPrice": "Prix (DZD)",
+    "productTestLabelRef": "Référence",
+    "productTestLabelCategory": "Catégorie",
+    "productTestValName": "Casque Bluetooth Pro",
+    "productTestValRef": "REF-1001",
+    "productTestValCategory": "Audio",
+    "productTestCurrency": "DZD",
+    "productTestCta": "Ouvrir le formulaire de commande"
   },
   "orders": {
     "backDashAria": "Retour au tableau de bord",

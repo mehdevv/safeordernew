@@ -1,16 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, useLocation } from "wouter";
 import { useGetProductOrderLink, useCreateOrder } from "@workspace/api-client-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { LucideIcon } from "lucide-react";
-import { ShieldCheck, Package, CheckCircle2, ArrowLeft, CreditCard, Landmark, Smartphone } from "lucide-react";
+import { ShieldCheck, Package, CheckCircle2, ArrowLeft, CreditCard, Landmark, Wallet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { PublicPageChrome } from "@/components/PublicPageChrome";
 import i18n from "@/i18n";
@@ -68,16 +69,23 @@ const WILAYAS = [
 
 const SAFE_PAY_RATE = 0.1;
 
+const DEFAULT_DELIVERY_COMPANIES = ["Yalidine", "Zaki", "Maystro", "Yalitec"] as const;
+
+function splitOfferedOptions(raw?: string | null): string[] {
+  if (!raw?.trim()) return [];
+  return raw.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+}
+
 function formatDaAmount(n: number): string {
   const loc = i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ";
   return `${new Intl.NumberFormat(loc, { maximumFractionDigits: 0 }).format(Math.round(n))} DA`;
 }
 
-type PaymentMethod = "cib" | "dahabia" | "baridimob";
+type PaymentMethod = "cib" | "dahabia" | "chargilypay";
 
 const DEPOSIT_PAYMENT_OPTIONS: {
   id: PaymentMethod;
-  labelKey: "payCib" | "payDahabia" | "payBaridi";
+  labelKey: "payCib" | "payDahabia" | "payChargily";
   icon: LucideIcon;
   iconClass: string;
   boxClass: string;
@@ -97,11 +105,11 @@ const DEPOSIT_PAYMENT_OPTIONS: {
     boxClass: "bg-amber-500/10 border border-amber-500/25",
   },
   {
-    id: "baridimob",
-    labelKey: "payBaridi",
-    icon: Smartphone,
-    iconClass: "text-blue-700 dark:text-blue-400",
-    boxClass: "bg-blue-500/10 border border-blue-500/25",
+    id: "chargilypay",
+    labelKey: "payChargily",
+    icon: Wallet,
+    iconClass: "text-violet-700 dark:text-violet-400",
+    boxClass: "bg-violet-500/10 border border-violet-500/25",
   },
 ];
 
@@ -124,9 +132,14 @@ export default function OrderPublic() {
     clientFirstName: "",
     clientLastName: "",
     clientPhone: "",
+    clientPhone2: "",
     wilaya: "",
     commune: "",
     address: "",
+    address2: "",
+    quantity: "1",
+    colorChoice: "",
+    sizeChoice: "",
     deliveryCompany: "",
     receptionMode: "domicile" as "domicile" | "bureau",
     remark: "",
@@ -136,7 +149,44 @@ export default function OrderPublic() {
     setForm(prev => ({ ...prev, [field]: value }));
   }
 
+  const colorOpts = useMemo(() => splitOfferedOptions(product?.colorsOffered), [product?.colorsOffered]);
+  const sizeOpts = useMemo(() => splitOfferedOptions(product?.sizesOffered), [product?.sizesOffered]);
+
+  const maxSelectableQty = useMemo(() => {
+    if (!product) return 1;
+    const qm = product.maxOrderQuantity != null && product.maxOrderQuantity >= 1 ? Math.floor(product.maxOrderQuantity) : 1;
+    const st = product.stock != null && product.stock >= 1 ? Math.floor(product.stock) : 999999;
+    return Math.max(1, Math.min(qm, st));
+  }, [product]);
+
+  const showQtySelect = maxSelectableQty > 1;
+
+  useEffect(() => {
+    if (!product) return;
+    const carriers =
+      product.deliveryCompanies && product.deliveryCompanies.length > 0
+        ? product.deliveryCompanies
+        : [...DEFAULT_DELIVERY_COMPANIES];
+    setForm(prev => ({
+      ...prev,
+      quantity: "1",
+      colorChoice: "",
+      sizeChoice: "",
+      deliveryCompany:
+        carriers.length === 1
+          ? carriers[0]
+          : prev.deliveryCompany && carriers.includes(prev.deliveryCompany)
+            ? prev.deliveryCompany
+            : "",
+    }));
+  }, [product]);
+
   function isDetailsValid() {
+    if (!product) return false;
+    const qty = Math.max(1, parseInt(form.quantity, 10) || 1);
+    if (showQtySelect && (qty < 1 || qty > maxSelectableQty)) return false;
+    if (colorOpts.length > 0 && !form.colorChoice) return false;
+    if (sizeOpts.length > 0 && !form.sizeChoice) return false;
     return (
       form.clientFirstName.trim() &&
       form.clientLastName.trim() &&
@@ -153,15 +203,21 @@ export default function OrderPublic() {
     setPaymentProcessing(true);
     try {
       await new Promise(r => setTimeout(r, 1200));
+      const qty = Math.max(1, parseInt(form.quantity, 10) || 1);
       const order = await createOrder.mutateAsync({
         data: {
           productId: product.id,
           clientFirstName: form.clientFirstName.trim(),
           clientLastName: form.clientLastName.trim(),
           clientPhone: form.clientPhone.trim(),
+          clientPhone2: form.clientPhone2.trim() || undefined,
           wilaya: form.wilaya,
           commune: form.commune.trim(),
           address: form.address.trim(),
+          address2: form.address2.trim() || undefined,
+          quantity: qty,
+          colorChoice: form.colorChoice.trim() || undefined,
+          sizeChoice: form.sizeChoice.trim() || undefined,
           deliveryCompany: form.deliveryCompany,
           receptionMode: form.receptionMode,
           remark: form.remark.trim() || undefined,
@@ -178,17 +234,19 @@ export default function OrderPublic() {
   const deliveryCompanies: string[] =
     product?.deliveryCompanies && product.deliveryCompanies.length > 0
       ? product.deliveryCompanies
-      : ["Yalidine", "Zaki", "Maystro", "Yalitec"];
+      : [...DEFAULT_DELIVERY_COMPANIES];
 
-  const productPrice = product?.price ?? 0;
-  const depositNow = Math.round(productPrice * SAFE_PAY_RATE);
-  const balanceAtDelivery = Math.max(0, productPrice - depositNow);
+  const unitPrice = product?.price ?? 0;
+  const qtyNum = Math.max(1, parseInt(form.quantity, 10) || 1);
+  const orderLineTotal = unitPrice * qtyNum;
+  const depositNow = Math.round(orderLineTotal * SAFE_PAY_RATE);
+  const balanceAtDelivery = Math.max(0, orderLineTotal - depositNow);
 
   const paymentLabels = useMemo(
     () => ({
       cib: t("public.payCib"),
       dahabia: t("public.payDahabia"),
-      baridimob: t("public.payBaridi"),
+      chargilypay: t("public.payChargily"),
     }),
     [t],
   );
@@ -255,7 +313,12 @@ export default function OrderPublic() {
                   {product.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{product.description}</p>}
                 </div>
                 <Badge variant="outline" className="text-base font-bold px-3 py-1 shrink-0">
-                  {product.price.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} DZD
+                  {unitPrice.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} DZD
+                  {qtyNum > 1 ? (
+                    <span className="block text-[10px] font-normal text-muted-foreground">
+                      × {qtyNum} = {orderLineTotal.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} DZD
+                    </span>
+                  ) : null}
                 </Badge>
               </div>
             </CardContent>
@@ -283,6 +346,16 @@ export default function OrderPublic() {
                     <Input id="phone" type="tel" placeholder="06XXXXXXXX" value={form.clientPhone} onChange={e => setField("clientPhone", e.target.value)} />
                   </div>
                   <div className="space-y-1">
+                    <Label htmlFor="phone2">{t("public.phone2")}</Label>
+                    <Input
+                      id="phone2"
+                      type="tel"
+                      placeholder={t("public.phone2Ph")}
+                      value={form.clientPhone2}
+                      onChange={e => setField("clientPhone2", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
                     <Label>{t("public.wilaya")}</Label>
                     <Select value={form.wilaya} onValueChange={v => setField("wilaya", v)}>
                       <SelectTrigger>
@@ -305,6 +378,61 @@ export default function OrderPublic() {
                     <Label htmlFor="address">{t("public.address")}</Label>
                     <Input id="address" value={form.address} onChange={e => setField("address", e.target.value)} />
                   </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="address2">{t("public.address2")}</Label>
+                    <Input id="address2" value={form.address2} onChange={e => setField("address2", e.target.value)} placeholder={t("public.address2Ph")} />
+                  </div>
+                  {colorOpts.length > 0 && (
+                    <div className="space-y-1">
+                      <Label>{t("public.color")}</Label>
+                      <Select value={form.colorChoice || undefined} onValueChange={v => setField("colorChoice", v)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("public.selectPlaceholder")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {colorOpts.map(c => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  {sizeOpts.length > 0 && (
+                    <div className="space-y-1">
+                      <Label>{t("public.size")}</Label>
+                      <Select value={form.sizeChoice || undefined} onValueChange={v => setField("sizeChoice", v)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("public.selectPlaceholder")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sizeOpts.map(s => (
+                            <SelectItem key={s} value={s}>
+                              {s}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  {showQtySelect && (
+                    <div className="space-y-1">
+                      <Label>{t("public.quantity")}</Label>
+                      <Select value={form.quantity} onValueChange={v => setField("quantity", v)}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: maxSelectableQty }, (_, i) => String(i + 1)).map(n => (
+                            <SelectItem key={n} value={n}>
+                              {n}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
                       <Label>{t("public.receptionMode")}</Label>
@@ -320,7 +448,7 @@ export default function OrderPublic() {
                     </div>
                     <div className="space-y-1">
                       <Label>{t("public.carrier")}</Label>
-                      <Select value={form.deliveryCompany} onValueChange={v => setField("deliveryCompany", v)}>
+                      <Select value={form.deliveryCompany || undefined} onValueChange={v => setField("deliveryCompany", v)}>
                         <SelectTrigger>
                           <SelectValue placeholder={t("public.carrierPlaceholder")} />
                         </SelectTrigger>
@@ -336,7 +464,13 @@ export default function OrderPublic() {
                   </div>
                   <div className="space-y-1">
                     <Label htmlFor="remark">{t("public.remark")}</Label>
-                    <Input id="remark" value={form.remark} onChange={e => setField("remark", e.target.value)} placeholder={t("public.remarkPh")} />
+                    <Textarea
+                      id="remark"
+                      rows={3}
+                      value={form.remark}
+                      onChange={e => setField("remark", e.target.value)}
+                      placeholder={t("public.remarkPh")}
+                    />
                   </div>
                   <Button className="w-full" size="lg" disabled={!isDetailsValid()} onClick={() => setStep("payment")}>
                     {t("public.continuePayment")}
@@ -360,14 +494,14 @@ export default function OrderPublic() {
                           {t("public.safePayExpl", {
                             deposit: formatDaAmount(depositNow),
                             balance: formatDaAmount(balanceAtDelivery),
-                            full: formatDaAmount(productPrice),
+                            full: formatDaAmount(orderLineTotal),
                           })}
                         </p>
                       </div>
                       <div className="space-y-2 rounded-lg border border-primary/15 bg-background/80 px-3 py-3 text-sm">
                         <div className="flex justify-between gap-3">
                           <span className="text-muted-foreground">{t("public.priceProduct")}</span>
-                          <span className="font-medium tabular-nums">{formatDaAmount(productPrice)}</span>
+                          <span className="font-medium tabular-nums">{formatDaAmount(orderLineTotal)}</span>
                         </div>
                         <div className="flex justify-between gap-3">
                           <span className="text-muted-foreground">{t("public.depositNow")}</span>
@@ -425,12 +559,12 @@ export default function OrderPublic() {
                 <Card className="border-dashed">
                   <CardContent className="pt-4 pb-4 text-sm space-y-2">
                     <p className="font-semibold">{t("public.payInstructions")}</p>
-                    {selectedPayment === "baridimob" && (
+                    {selectedPayment === "chargilypay" && (
                       <>
-                        <p className="text-muted-foreground">{t("public.instrBaridi1")}</p>
-                        <p className="text-muted-foreground">{t("public.instrBaridi2")}</p>
-                        <p className="text-muted-foreground">{t("public.instrBaridi3", { amount: formatDaAmount(depositNow) })}</p>
-                        <p className="text-muted-foreground">{t("public.instrBaridi4")}</p>
+                        <p className="text-muted-foreground">{t("public.instrChargily1")}</p>
+                        <p className="text-muted-foreground">{t("public.instrChargily2")}</p>
+                        <p className="text-muted-foreground">{t("public.instrChargily3", { amount: formatDaAmount(depositNow) })}</p>
+                        <p className="text-muted-foreground">{t("public.instrChargily4")}</p>
                       </>
                     )}
                     {selectedPayment === "dahabia" && (
@@ -456,17 +590,51 @@ export default function OrderPublic() {
                   <p className="font-semibold mb-2">{t("public.recap")}</p>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{tc("product")}</span>
-                    <span>{product.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("public.delivery")}</span>
-                    <span>
-                      {form.wilaya}, {form.commune} · {form.deliveryCompany}
+                    <span className="text-end">
+                      {product.name}
+                      {qtyNum > 1 ? (
+                        <span className="block text-xs text-muted-foreground">
+                          {unitPrice.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} × {qtyNum}
+                        </span>
+                      ) : null}
                     </span>
                   </div>
+                  {form.colorChoice ? (
+                    <div className="flex justify-between gap-2 text-xs">
+                      <span className="text-muted-foreground">{t("public.color")}</span>
+                      <span>{form.colorChoice}</span>
+                    </div>
+                  ) : null}
+                  {form.sizeChoice ? (
+                    <div className="flex justify-between gap-2 text-xs">
+                      <span className="text-muted-foreground">{t("public.size")}</span>
+                      <span>{form.sizeChoice}</span>
+                    </div>
+                  ) : null}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{t("public.delivery")}</span>
+                    <span className="text-end text-sm">
+                      {form.wilaya}, {form.commune} · {form.deliveryCompany}
+                      {form.address2.trim() ? (
+                        <span className="block text-xs text-muted-foreground">{form.address2.trim()}</span>
+                      ) : null}
+                    </span>
+                  </div>
+                  {form.clientPhone2.trim() ? (
+                    <div className="flex justify-between gap-2 text-xs">
+                      <span className="text-muted-foreground">{t("public.phone2")}</span>
+                      <span className="font-mono">{form.clientPhone2}</span>
+                    </div>
+                  ) : null}
+                  {form.remark.trim() ? (
+                    <div className="flex justify-between gap-2 text-xs border-t border-border pt-2">
+                      <span className="text-muted-foreground shrink-0">{t("public.remark")}</span>
+                      <span className="text-end line-clamp-3">{form.remark}</span>
+                    </div>
+                  ) : null}
                   <div className="flex justify-between pt-1 border-t">
                     <span className="font-medium">{t("public.total")}</span>
-                    <span className="font-bold">{product.price.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} DZD</span>
+                    <span className="font-bold">{orderLineTotal.toLocaleString(i18n.language?.startsWith("ar") ? "ar-DZ" : "fr-DZ")} DZD</span>
                   </div>
                 </CardContent>
               </Card>

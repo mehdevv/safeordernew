@@ -44,6 +44,10 @@ interface ProductFormData {
   price: string;
   stock: string;
   variants: string;
+  colorsOffered: string;
+  sizesOffered: string;
+  maxOrderQuantity: string;
+  deliveryCompanies: string;
 }
 
 const EMPTY_FORM: ProductFormData = {
@@ -53,6 +57,10 @@ const EMPTY_FORM: ProductFormData = {
   price: "",
   stock: "",
   variants: "",
+  colorsOffered: "",
+  sizesOffered: "",
+  maxOrderQuantity: "",
+  deliveryCompanies: "",
 };
 
 export default function MerchantProducts() {
@@ -89,6 +97,10 @@ export default function MerchantProducts() {
     price: number;
     stock?: number | null;
     variants?: string | null;
+    colorsOffered?: string | null;
+    sizesOffered?: string | null;
+    maxOrderQuantity?: number | null;
+    deliveryCompanies?: string[] | null;
   }) {
     setEditingId(p.id);
     setForm({
@@ -98,6 +110,10 @@ export default function MerchantProducts() {
       price: String(p.price),
       stock: p.stock != null ? String(p.stock) : "",
       variants: p.variants ?? "",
+      colorsOffered: p.colorsOffered ?? "",
+      sizesOffered: p.sizesOffered ?? "",
+      maxOrderQuantity: p.maxOrderQuantity != null ? String(p.maxOrderQuantity) : "",
+      deliveryCompanies: (p.deliveryCompanies ?? []).join(", "),
     });
     setDialogOpen(true);
   }
@@ -107,6 +123,11 @@ export default function MerchantProducts() {
     const price = parseFloat(form.price);
     if (isNaN(price) || price <= 0) return;
     const stock = form.stock ? parseInt(form.stock, 10) : undefined;
+    const maxOrderRaw = form.maxOrderQuantity.trim();
+    const maxOrderQuantity =
+      maxOrderRaw.length > 0 && Number.isFinite(parseInt(maxOrderRaw, 10)) && parseInt(maxOrderRaw, 10) >= 1
+        ? parseInt(maxOrderRaw, 10)
+        : undefined;
     try {
       if (editingId) {
         await updateProduct.mutateAsync({
@@ -118,6 +139,10 @@ export default function MerchantProducts() {
             price,
             stock: stock ?? undefined,
             variants: form.variants.trim() || undefined,
+            colorsOffered: form.colorsOffered.trim() || undefined,
+            sizesOffered: form.sizesOffered.trim() || undefined,
+            maxOrderQuantity: maxOrderQuantity,
+            deliveryCompanies: form.deliveryCompanies.trim() || undefined,
           },
         });
         toast({ title: te("productUpdated") });
@@ -130,6 +155,10 @@ export default function MerchantProducts() {
             price,
             stock: stock ?? undefined,
             variants: form.variants.trim() || undefined,
+            colorsOffered: form.colorsOffered.trim() || undefined,
+            sizesOffered: form.sizesOffered.trim() || undefined,
+            maxOrderQuantity: maxOrderQuantity,
+            deliveryCompanies: form.deliveryCompanies.trim() || undefined,
           },
         });
         toast({ title: te("productCreated") });
@@ -294,6 +323,46 @@ export default function MerchantProducts() {
             <div className="space-y-1">
               <Label htmlFor="prod-variants">{t("products.variantsLabel")}</Label>
               <Input id="prod-variants" value={form.variants} onChange={e => setField("variants", e.target.value)} placeholder={t("products.variantsPh")} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="prod-colors">{t("products.colorsLabel")}</Label>
+              <Input
+                id="prod-colors"
+                value={form.colorsOffered}
+                onChange={e => setField("colorsOffered", e.target.value)}
+                placeholder={t("products.colorsPh")}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="prod-sizes">{t("products.sizesLabel")}</Label>
+              <Input
+                id="prod-sizes"
+                value={form.sizesOffered}
+                onChange={e => setField("sizesOffered", e.target.value)}
+                placeholder={t("products.sizesPh")}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="prod-maxq">{t("products.maxQtyLabel")}</Label>
+              <Input
+                id="prod-maxq"
+                type="number"
+                min={1}
+                value={form.maxOrderQuantity}
+                onChange={e => setField("maxOrderQuantity", e.target.value)}
+                placeholder={t("products.maxQtyPh")}
+              />
+              <p className="text-[11px] text-muted-foreground">{t("products.maxQtyHint")}</p>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="prod-carriers">{t("products.carriersLabel")}</Label>
+              <Input
+                id="prod-carriers"
+                value={form.deliveryCompanies}
+                onChange={e => setField("deliveryCompanies", e.target.value)}
+                placeholder={t("products.carriersPh")}
+              />
+              <p className="text-[11px] text-muted-foreground">{t("products.carriersHint")}</p>
             </div>
           </div>
           <DialogFooter>

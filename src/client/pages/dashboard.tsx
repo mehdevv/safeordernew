@@ -6,12 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShieldCheck, Package, LogOut, Store, Hash, ExternalLink } from "lucide-react";
+import { ShieldCheck, Package, LogOut, Store, Hash, ExternalLink, FlaskConical } from "lucide-react";
 import { activateMerchantAuth, clearClientToken } from "@/lib/client-auth";
 import { ClientAuthGuard } from "@/client/components/client-auth-guard";
 import { orderStatusBadgeClass } from "@/lib/order-status-styles";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import i18n from "@/i18n";
+
+/** Produit démo n°1 du stub marchand — pour tester le formulaire de commande public */
+const DEMO_PRODUCT_FORM_ID = 1;
+const DEMO_PRODUCT_PRICE = 12900;
 
 export default function ClientDashboard() {
   const [, navigate] = useLocation();
@@ -64,6 +68,58 @@ export default function ClientDashboard() {
           </div>
 
           <div className="max-w-lg mx-auto px-4 pt-4 space-y-4">
+            <section
+              className="rounded-2xl border border-dashed border-amber-800/25 bg-amber-50/90 p-4 shadow-sm dark:border-amber-500/30 dark:bg-amber-950/25"
+              aria-label={t("dashboard.productTestAria")}
+              data-testid="client-product-form-demo"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
+                  <FlaskConical className="h-5 w-5 shrink-0 text-amber-800 dark:text-amber-200" aria-hidden />
+                  <h2 className="text-xs font-bold uppercase tracking-wide text-amber-900 dark:text-amber-100">
+                    {t("dashboard.productTestTitle")}
+                  </h2>
+                </div>
+                <Badge className="shrink-0 border-0 bg-amber-200/90 text-[10px] font-bold uppercase text-amber-900 dark:bg-amber-400/30 dark:text-amber-50">
+                  {t("dashboard.productTestBadge")}
+                </Badge>
+              </div>
+              <p className="text-xs leading-relaxed text-amber-950/80 dark:text-amber-100/80">{t("dashboard.productTestDesc")}</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-lg border border-border/80 bg-card px-2 py-3 text-center shadow-sm">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                    {t("dashboard.productTestLabelName")}
+                  </p>
+                  <p className="mt-1 break-words text-sm font-semibold text-primary">{t("dashboard.productTestValName")}</p>
+                </div>
+                <div className="rounded-lg border border-border/80 bg-card px-2 py-3 text-center shadow-sm">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                    {t("dashboard.productTestLabelPrice")}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-primary tabular-nums">
+                    {DEMO_PRODUCT_PRICE.toLocaleString(dateLocale)} {t("dashboard.productTestCurrency")}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border/80 bg-card px-2 py-3 text-center shadow-sm">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                    {t("dashboard.productTestLabelRef")}
+                  </p>
+                  <p className="mt-1 font-mono text-sm font-semibold text-primary">{t("dashboard.productTestValRef")}</p>
+                </div>
+                <div className="rounded-lg border border-border/80 bg-card px-2 py-3 text-center shadow-sm">
+                  <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                    {t("dashboard.productTestLabelCategory")}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-primary">{t("dashboard.productTestValCategory")}</p>
+                </div>
+              </div>
+              <Link href={`/order/${DEMO_PRODUCT_FORM_ID}`} className="block pt-1">
+                <Button type="button" variant="secondary" className="w-full border-amber-800/20 bg-amber-100/80 text-amber-950 hover:bg-amber-200/80 dark:border-amber-500/30 dark:bg-amber-900/40 dark:text-amber-50 dark:hover:bg-amber-900/60">
+                  {t("dashboard.productTestCta")}
+                </Button>
+              </Link>
+            </section>
+
             <div className="bg-card rounded-xl border shadow-sm p-4 flex items-center gap-3">
               <ShieldCheck className="h-6 w-6 text-primary shrink-0" />
               <div>

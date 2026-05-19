@@ -29,14 +29,56 @@ type ProductRow = {
   reference: string;
   status: "active" | "archived";
   variants?: string;
+  /** Couleurs proposées, séparées par virgule (optionnel) */
+  colorsOffered?: string;
+  /** Tailles proposées, séparées par virgule (optionnel) */
+  sizesOffered?: string;
+  /** Quantité max par commande (optionnel ; sinon 1) */
+  maxOrderQuantity?: number;
+  /** Transporteurs proposés pour ce produit (optionnel) */
+  deliveryCompanies?: string[];
 };
 
 let mockProducts: ProductRow[] = [
-  { id: 1, name: "Casque Bluetooth Pro", category: "Audio", description: "Réduction de bruit, autonomie 24h.", price: 12900, stock: 12, reference: "REF-1001", status: "active" },
-  { id: 2, name: "Chargeur USB-C 65W", category: "Accessoires", price: 4500, stock: 40, reference: "REF-2002", status: "active" },
+  {
+    id: 1,
+    name: "Casque Bluetooth Pro",
+    category: "Audio",
+    description: "Réduction de bruit, autonomie 24h.",
+    price: 12900,
+    stock: 12,
+    reference: "REF-1001",
+    status: "active",
+    colorsOffered: "Noir,Blanc,Bleu marine",
+    sizesOffered: "Taille unique",
+    maxOrderQuantity: 5,
+    deliveryCompanies: ["Yalidine", "ZR Express", "Maystro", "World Express"],
+  },
+  {
+    id: 2,
+    name: "Chargeur USB-C 65W",
+    category: "Accessoires",
+    price: 4500,
+    stock: 40,
+    reference: "REF-2002",
+    status: "active",
+    deliveryCompanies: ["Yalidine", "Maystro"],
+  },
 ];
 
 let nextProductId = 100;
+
+function parseCsvToStringList(raw: unknown): string[] | undefined {
+  if (raw == null) return undefined;
+  if (Array.isArray(raw)) {
+    const a = raw.map((x) => String(x).trim()).filter(Boolean);
+    return a.length ? a : undefined;
+  }
+  const s = String(raw).trim();
+  if (!s) return undefined;
+  const parts = s.split(/[,;|]/).map((x) => x.trim()).filter(Boolean);
+  return parts.length ? parts : undefined;
+}
 
 type RecentInsightTag = "safe_pay" | "call_required" | "new_customer" | "loyal" | "high_risk";
 
@@ -46,14 +88,28 @@ type OrderRow = {
   clientFirstName: string;
   clientLastName: string;
   clientPhone: string;
+  clientPhone2?: string;
   wilaya: string;
   commune: string;
+  address?: string;
+  address2?: string;
   totalPrice: number;
+  quantity?: number;
+  colorChoice?: string;
+  sizeChoice?: string;
+  deliveryCompany?: string;
   safePayStatus: "paid" | "pending" | "deducted";
   status: "confirmation" | "preparation" | "dispatch" | "en_livraison" | "livre" | "retour";
   createdAt: string;
   product?: { name: string };
   shopName: string;
+  remark?: string;
+  /** Moyen utilisé pour le dépôt Safe Pay (ex. cib, dahabia, chargilypay) */
+  paymentMethod?: string;
+  /** Montant du dépôt encaissé (ex. 10 % du total) */
+  safePayDepositAmount?: number;
+  /** Référence affichée sur le reçu de dépôt */
+  depositReceiptId?: string;
   /** Hint for « Commandes récentes » (point + pastille) */
   insightTag?: RecentInsightTag;
 };
@@ -94,6 +150,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: async ({ data }: { data: Record<string, unknown> }) => {
       const id = nextProductId++;
+      const maxQ = data.maxOrderQuantity != null ? Number(data.maxOrderQuantity) : undefined;
       const row: ProductRow = {
         id,
         name: String(data.name ?? "Produit"),
@@ -104,6 +161,10 @@ export function useCreateProduct() {
         reference: `REF-${id}`,
         status: "active",
         variants: data.variants ? String(data.variants) : undefined,
+        colorsOffered: data.colorsOffered != null ? String(data.colorsOffered).trim() || undefined : undefined,
+        sizesOffered: data.sizesOffered != null ? String(data.sizesOffered).trim() || undefined : undefined,
+        maxOrderQuantity: maxQ != null && Number.isFinite(maxQ) && maxQ >= 1 ? Math.floor(maxQ) : undefined,
+        deliveryCompanies: parseCsvToStringList(data.deliveryCompanies),
       };
       mockProducts = [...mockProducts, row];
       return row;
@@ -126,6 +187,21 @@ export function useUpdateProduct() {
               price: data.price != null ? Number(data.price) : p.price,
               stock: data.stock != null ? Number(data.stock) : p.stock,
               variants: data.variants != null ? String(data.variants) : p.variants,
+              colorsOffered:
+                data.colorsOffered !== undefined
+                  ? String(data.colorsOffered).trim() || undefined
+                  : p.colorsOffered,
+              sizesOffered:
+                data.sizesOffered !== undefined ? String(data.sizesOffered).trim() || undefined : p.sizesOffered,
+              maxOrderQuantity:
+                data.maxOrderQuantity !== undefined
+                  ? (() => {
+                      const n = Number(data.maxOrderQuantity);
+                      return Number.isFinite(n) && n >= 1 ? Math.floor(n) : undefined;
+                    })()
+                  : p.maxOrderQuantity,
+              deliveryCompanies:
+                data.deliveryCompanies !== undefined ? parseCsvToStringList(data.deliveryCompanies) : p.deliveryCompanies,
             }
           : p,
       );
@@ -184,9 +260,13 @@ export function useGetProductOrderLink(productId: number) {
         category: p.category,
         description: p.description,
         price: p.price,
+        stock: p.stock,
         shopName: mockMerchant.shopName,
         trustScore: mockMerchant.trustScore,
-        deliveryCompanies: [] as string[],
+        colorsOffered: p.colorsOffered,
+        sizesOffered: p.sizesOffered,
+        maxOrderQuantity: p.maxOrderQuantity,
+        deliveryCompanies: p.deliveryCompanies?.length ? [...p.deliveryCompanies] : [],
       };
     },
   });
@@ -203,9 +283,14 @@ export function useCreateOrder() {
         clientFirstName: string;
         clientLastName: string;
         clientPhone: string;
+        clientPhone2?: string;
         wilaya: string;
         commune: string;
         address: string;
+        address2?: string;
+        quantity?: number;
+        colorChoice?: string;
+        sizeChoice?: string;
         deliveryCompany: string;
         receptionMode: string;
         remark?: string;
@@ -214,6 +299,12 @@ export function useCreateOrder() {
     }) => {
       const id = 9000 + Math.floor(Math.random() * 1000);
       const trackingCode = `SO-${Date.now().toString(36).toUpperCase()}`;
+      const depositReceiptId = `RCP-${Date.now().toString(36).toUpperCase()}`;
+      const unit = Number(mockProducts.find((x) => x.id === data.productId)?.price ?? 0);
+      const qty = Math.max(1, Math.floor(Number(data.quantity) || 1));
+      const totalPrice = unit * qty;
+      const safePayDepositAmount = Math.round(totalPrice * 0.1);
+      const paymentMethod = String(data.paymentMethod ?? "").trim() || undefined;
       mockOrders = [
         {
           id,
@@ -221,14 +312,25 @@ export function useCreateOrder() {
           clientFirstName: String(data.clientFirstName ?? ""),
           clientLastName: String(data.clientLastName ?? ""),
           clientPhone: String(data.clientPhone ?? ""),
+          clientPhone2: data.clientPhone2?.trim() || undefined,
           wilaya: String(data.wilaya ?? ""),
           commune: String(data.commune ?? ""),
-          totalPrice: Number(mockProducts.find((x) => x.id === data.productId)?.price ?? 0),
+          address: String(data.address ?? ""),
+          address2: data.address2?.trim() || undefined,
+          totalPrice,
+          quantity: qty,
+          colorChoice: data.colorChoice?.trim() || undefined,
+          sizeChoice: data.sizeChoice?.trim() || undefined,
+          deliveryCompany: String(data.deliveryCompany ?? ""),
           safePayStatus: "pending",
           status: "confirmation",
           createdAt: new Date().toISOString(),
           product: { name: String(mockProducts.find((x) => x.id === data.productId)?.name ?? "Produit") },
           shopName: mockMerchant.shopName,
+          remark: data.remark?.trim() || undefined,
+          paymentMethod,
+          safePayDepositAmount,
+          depositReceiptId,
         },
         ...mockOrders,
       ];
@@ -258,6 +360,10 @@ export function useTrackOrder(code: string) {
       ];
       const est = new Date();
       est.setDate(est.getDate() + 3);
+      const deposit =
+        order.safePayDepositAmount != null && Number.isFinite(order.safePayDepositAmount)
+          ? Math.round(order.safePayDepositAmount)
+          : Math.round(order.totalPrice * 0.1);
       return {
         order: {
           id: order.id,
@@ -266,7 +372,16 @@ export function useTrackOrder(code: string) {
           wilaya: order.wilaya,
           commune: order.commune,
           clientPhone: order.clientPhone,
+          clientFirstName: order.clientFirstName,
+          clientLastName: order.clientLastName,
           product: order.product,
+          shopName: order.shopName,
+          totalPrice: order.totalPrice,
+          safePayDepositAmount: deposit,
+          balanceAtDelivery: Math.max(0, order.totalPrice - deposit),
+          paymentMethod: order.paymentMethod,
+          depositReceiptId: order.depositReceiptId,
+          createdAt: order.createdAt,
         },
         steps,
         estimatedDelivery: est.toISOString(),
