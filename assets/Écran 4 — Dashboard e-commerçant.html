@@ -1,0 +1,502 @@
+
+<!-- saved from url=(0064)file:///C:/Users/ECC%20STORE/Downloads/safe_order_ui_mockup.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+.screen{display:none}
+.screen.active{display:block}
+.shell{background:#F0F2F5;border-radius:16px;overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.topbar{background:#0D3B66;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{color:#fff;font-size:15px;font-weight:500;letter-spacing:-0.3px}
+.topbar-logo span{color:#F0AE1A}
+.lang-row{display:flex;gap:6px}
+.lang-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer}
+.lang-btn.active{background:#F0AE1A;color:#0D3B66;font-weight:500}
+.content-area{padding:20px 16px}
+.role-card{background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:20px;cursor:pointer;transition:border-color 0.15s;margin-bottom:12px;display:flex;align-items:center;gap:14px}
+.role-card:hover{border-color:#0D3B66}
+.role-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.role-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.role-sub{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+.form-group{margin-bottom:12px}
+.form-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;display:block;font-weight:500}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inp{width:100%;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:0 10px;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary)}
+.sel{width:100%;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:0 8px;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary)}
+.cond-box{background:#E6F7EE;border:1px solid #0D6E3F;border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}
+.cond-num{background:#0D6E3F;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;margin-top:1px}
+.cond-text{font-size:12px;color:#063D22;line-height:1.5}
+.cond-title{font-size:13px;font-weight:500;color:#0D6E3F;margin-bottom:2px}
+.btn-primary{background:#0D3B66;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-green{background:#0D6E3F;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.step-bar{display:flex;gap:6px;margin-bottom:16px}
+.step{height:4px;flex:1;border-radius:2px;background:#E9ECEF}
+.step.done{background:#0D6E3F}
+.step.active{background:#0D3B66}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin-bottom:10px;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+
+/* DASHBOARD */
+.sidebar{background:#0D3B66;width:52px;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:6px}
+.sb-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.sb-icon.active{background:rgba(255,255,255,0.2)}
+.sb-icon:hover{background:rgba(255,255,255,0.12)}
+.main-panel{flex:1;overflow:hidden;background:#F0F2F5}
+.dash-top{background:#0D3B66;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.dash-top-title{color:#fff;font-size:14px;font-weight:500}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 12px 0}
+.stat-card{background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary)}
+.stat-val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.stat-trend{font-size:10px;margin-top:3px}
+.pipeline{padding:10px 12px}
+.pipe-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px}
+.pipe-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.pipe-tabs::-webkit-scrollbar{display:none}
+.ptab{border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.ptab.active{color:#fff}
+.orders-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.order-card{background:#fff;border-radius:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;gap:10px}
+.o-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.o-info{flex:1;min-width:0}
+.o-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.o-detail{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.o-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.o-price{font-size:13px;font-weight:500;color:var(--color-text-primary);text-align:right;flex-shrink:0}
+.insight-box{background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);margin:0 12px;padding:12px}
+.insight-title{font-size:12px;font-weight:500;color:#0D3B66;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.insight-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:7px}
+.insight-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.insight-text{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.retour-card{background:#fff;border-radius:10px;border-left:3px solid #C0392B;border-top:0.5px solid var(--color-border-tertiary);border-right:0.5px solid var(--color-border-tertiary);border-bottom:0.5px solid var(--color-border-tertiary);padding:10px 12px;margin-bottom:6px}
+.ai-badge{background:#EDE9FE;color:#5B21B6;font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;display:inline-block;margin-top:4px}
+.trust-bar-wrap{background:#E9ECEF;border-radius:4px;height:6px;margin-top:4px}
+.trust-bar{height:6px;border-radius:4px;background:#0D6E3F}
+</style>
+
+</head><body><h2 class="sr-only">Safe Order — interactive UI mockup with landing, registration, and dashboard screens</h2>
+
+<div style="display:flex;flex-direction:column;gap:16px;padding:8px 0 16px">
+
+<!-- ══ SCREEN 1: LANDING ══ -->
+<div class="screen" id="s1">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 1 — Page d'accueil</div>
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-logo">Safe<span>Order</span></div>
+    <div class="lang-row">
+      <button class="lang-btn active">FR</button>
+      <button class="lang-btn">EN</button>
+      <button class="lang-btn">عر</button>
+    </div>
+  </div>
+  <div class="content-area">
+    <div style="text-align:center;padding:16px 0 20px">
+      <div style="font-size:11px;color:#0D6E3F;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Bienvenue sur</div>
+      <div style="font-size:26px;font-weight:500;color:#0D3B66;margin-bottom:4px">Safe<span style="color:#0D6E3F">Order</span><span style="color:#F0AE1A;font-size:16px">.</span></div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">E-commerce de confiance en Algérie</div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-secondary);text-align:center;margin-bottom:14px">Vous utilisez la plateforme en tant que :</div>
+    <div class="role-card" onclick="go(&#39;s2&#39;)">
+      <div class="role-icon" style="background:#E8F0FE">🏪</div>
+      <div>
+        <div class="role-title">E-commerçant</div>
+        <div class="role-sub">Gérez vos commandes, protégez vos ventes, analysez vos retours</div>
+      </div>
+      <div style="color:#0D3B66;font-size:16px;margin-left:auto">›</div>
+    </div>
+    <div class="role-card" onclick="alert(&#39;Interface client — sera présentée dans la prochaine étape !&#39;)">
+      <div class="role-icon" style="background:#E6F7EE">👤</div>
+      <div>
+        <div class="role-title">Client</div>
+        <div class="role-sub">Suivez vos commandes, payez en confiance, laissez un avis</div>
+      </div>
+      <div style="color:#0D6E3F;font-size:16px;margin-left:auto">›</div>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--color-text-secondary)">Vous êtes nouveau ? <span style="color:#0D3B66;cursor:pointer;font-weight:500">Créer un compte</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 2: INSCRIPTION ══ -->
+<div class="screen" id="s2">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 2 — Inscription e-commerçant</div>
+<div class="shell">
+  <div class="topbar">
+    <div style="color:rgba(255,255,255,0.6);cursor:pointer;font-size:13px" onclick="go(&#39;s1&#39;)">‹ Retour</div>
+    <div class="topbar-logo">Inscription</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="content-area">
+    <div class="step-bar">
+      <div class="step done"></div><div class="step active"></div><div class="step"></div>
+    </div>
+    <div class="section-title">Informations personnelles</div>
+    <div class="form-row form-group">
+      <div><div class="form-label">Nom</div><input class="inp" placeholder="Benali"></div>
+      <div><div class="form-label">Prénom</div><input class="inp" placeholder="Yacine"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Adresse email</div>
+      <input class="inp" style="width:100%" placeholder="yacine@boutique.dz">
+    </div>
+    <div class="form-row form-group">
+      <div><div class="form-label">Téléphone 1</div><input class="inp" placeholder="0550 000 000"></div>
+      <div><div class="form-label">Téléphone 2 (opt.)</div><input class="inp" placeholder="0770 000 000"></div>
+    </div>
+    <div class="section-title" style="margin-top:6px">Localisation</div>
+    <div class="form-row form-group">
+      <div><div class="form-label">Wilaya</div>
+        <select class="sel"><option>Alger</option><option>Oran</option><option>Constantine</option><option>Annaba</option><option>Blida</option></select>
+      </div>
+      <div><div class="form-label">Commune</div><input class="inp" placeholder="Bab Ezzouar"></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Adresse complète</div>
+      <input class="inp" style="width:100%" placeholder="Rue, Cité, N° ...">
+    </div>
+    <div class="section-title" style="margin-top:6px">Sociétés de livraison</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox" checked=""> Yalidine</label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox"> ZR Express</label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox"> Maystro</label>
+      <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox"> Procolis</label>
+    </div>
+    <button class="btn-primary" onclick="go(&#39;s3&#39;)">Continuer — Accepter les conditions ›</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 3: CONDITIONS ══ -->
+<div class="screen" id="s3">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 3 — Conditions Safe Standards</div>
+<div class="shell">
+  <div class="topbar">
+    <div style="color:rgba(255,255,255,0.6);cursor:pointer;font-size:13px" onclick="go(&#39;s2&#39;)">‹ Retour</div>
+    <div class="topbar-logo">Safe Standards</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="content-area">
+    <div class="step-bar">
+      <div class="step done"></div><div class="step done"></div><div class="step active"></div>
+    </div>
+    <div style="text-align:center;padding:10px 0 16px">
+      <div style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px">Engagement Safe Order</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.5">Pour bénéficier de la protection Safe Pay,<br>vous acceptez les 3 conditions suivantes :</div>
+    </div>
+    <div class="cond-box">
+      <div class="cond-num">1</div>
+      <div class="cond-text">
+        <div class="cond-title">Photos authentiques du produit</div>
+        Toutes les photos de vos produits doivent être des prises de vue réelles. Pas d'images Pinterest, pas de photos modifiées, pas de visuels recopiés. Chaque produit doit être photographié tel qu'il est.
+      </div>
+    </div>
+    <div class="cond-box">
+      <div class="cond-num">2</div>
+      <div class="cond-text">
+        <div class="cond-title">Description complète et honnête</div>
+        Chaque produit doit avoir une description détaillée : taille, couleur exacte, matière, dimensions, mode d'utilisation. Tout ce que le client ne peut pas voir sur la photo doit être écrit.
+      </div>
+    </div>
+    <div class="cond-box">
+      <div class="cond-num">3</div>
+      <div class="cond-text">
+        <div class="cond-title">Emballage soigné et protecteur</div>
+        Chaque commande doit être emballée de manière à protéger le produit durant le transport. Les produits fragiles doivent être sécurisés. Le client doit recevoir exactement ce qu'il a commandé.
+      </div>
+    </div>
+    <label style="display:flex;align-items:flex-start;gap:10px;margin:14px 0;font-size:12px;color:var(--color-text-primary);cursor:pointer">
+      <input type="checkbox" id="accept-cond" style="margin-top:2px;flex-shrink:0">
+      <span>Je comprends et j'accepte les 3 conditions Safe Standards. Je m'engage à les respecter pour chaque commande.</span>
+    </label>
+    <button class="btn-green" onclick="go(&#39;s4&#39;)">Accéder à mon espace e-commerçant ›</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 4: DASHBOARD ══ -->
+<div class="screen active" id="s4">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 4 — Dashboard e-commerçant</div>
+<div class="shell">
+  <div style="display:flex">
+    <div class="sidebar">
+      <div class="topbar-logo" style="font-size:11px;color:#F0AE1A;margin-bottom:8px">SO</div>
+      <div class="sb-icon active" title="Commandes">📦</div>
+      <div class="sb-icon" title="Statistiques" onclick="go(&#39;s5&#39;)">📊</div>
+      <div class="sb-icon" title="Produits">🏷</div>
+      <div class="sb-icon" title="Feedbacks">💬</div>
+      <div class="sb-icon" title="Safe Insights" onclick="go(&#39;s6&#39;)">🔍</div>
+      <div class="sb-icon" title="Safe Academy">🎓</div>
+      <div style="flex:1"></div>
+      <div class="sb-icon" title="Profil">👤</div>
+    </div>
+    <div class="main-panel">
+      <div class="dash-top">
+        <div class="dash-top-title">Mes commandes</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="background:rgba(255,255,255,0.15);color:#fff;font-size:11px;padding:3px 10px;border-radius:12px">Yalidine ▾</div>
+          <div style="background:#F0AE1A;color:#0D3B66;font-size:11px;padding:3px 10px;border-radius:12px;font-weight:500;cursor:pointer">+ Nouvelle</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val">24</div><div class="stat-lbl">Aujourd'hui</div><div class="stat-trend" style="color:#0D6E3F">+3 vs hier</div></div>
+        <div class="stat-card"><div class="stat-val">7</div><div class="stat-lbl">En livraison</div><div class="stat-trend" style="color:#F0AE1A">2 urgentes</div></div>
+        <div class="stat-card"><div class="stat-val">3</div><div class="stat-lbl">Retours</div><div class="stat-trend" style="color:#C0392B">analyse IA</div></div>
+        <div class="stat-card"><div class="stat-val">87</div><div class="stat-lbl">Trust Score</div><div class="stat-trend" style="color:#0D6E3F">+2 ce mois</div></div>
+      </div>
+      <div class="pipeline">
+        <div class="pipe-label">Pipeline des commandes</div>
+        <div class="pipe-tabs">
+          <button class="ptab active" style="background:#1A5C99" onclick="showTab(&#39;confirmation&#39;,this)">En confirmation (5)</button>
+          <button class="ptab" style="background:#E9ECEF;color:#444" onclick="showTab(&#39;preparation&#39;,this)">En préparation (8)</button>
+          <button class="ptab" style="background:#E9ECEF;color:#444" onclick="showTab(&#39;dispatch&#39;,this)">En dispatch (3)</button>
+          <button class="ptab" style="background:#E9ECEF;color:#444" onclick="showTab(&#39;livraison&#39;,this)">En livraison (7)</button>
+          <button class="ptab" style="background:#E9ECEF;color:#444" onclick="showTab(&#39;livre&#39;,this)">Livré (48)</button>
+          <button class="ptab" style="background:#E9ECEF;color:#444" onclick="showTab(&#39;retour&#39;,this)">Retour traité (3)</button>
+        </div>
+        <div class="orders-list" id="orders-list">
+    <div class="order-card">
+      <div class="o-dot" style="background:#0D6E3F"></div>
+      <div class="o-info">
+        <div class="o-name">Nassim T.</div>
+        <div class="o-detail">Alger · #2041 · Safe Pay ✓</div>
+        <span class="o-badge" style="background:#E6F7EE;color:#0D6E3F;margin-top:3px;display:inline-block">Safe Pay</span>
+      </div>
+      <div class="o-price">3 200 DA</div>
+    </div>
+    <div class="order-card">
+      <div class="o-dot" style="background:#F0AE1A"></div>
+      <div class="o-info">
+        <div class="o-name">Lina B.</div>
+        <div class="o-detail">Oran · #2040 · Appel requis</div>
+        <span class="o-badge" style="background:#FEF7E0;color:#7A5600;margin-top:3px;display:inline-block">Appel</span>
+      </div>
+      <div class="o-price">1 800 DA</div>
+    </div>
+    <div class="order-card">
+      <div class="o-dot" style="background:#1A5C99"></div>
+      <div class="o-info">
+        <div class="o-name">Karim M.</div>
+        <div class="o-detail">Blida · #2039 · 1ère commande</div>
+        <span class="o-badge" style="background:#E8F0FE;color:#0D3B66;margin-top:3px;display:inline-block">Nouveau</span>
+      </div>
+      <div class="o-price">5 500 DA</div>
+    </div>
+    <div class="order-card">
+      <div class="o-dot" style="background:#534AB7"></div>
+      <div class="o-info">
+        <div class="o-name">Sara H.</div>
+        <div class="o-detail">Constantine · #2038 · Client fidèle</div>
+        <span class="o-badge" style="background:#EDE9FE;color:#3C3489;margin-top:3px;display:inline-block">Fidèle</span>
+      </div>
+      <div class="o-price">2 100 DA</div>
+    </div>
+    <div class="order-card">
+      <div class="o-dot" style="background:#C0392B"></div>
+      <div class="o-info">
+        <div class="o-name">Walid K.</div>
+        <div class="o-detail">Annaba · #2037 · Risque élevé</div>
+        <span class="o-badge" style="background:#FDEDEB;color:#791F1F;margin-top:3px;display:inline-block">Risque</span>
+      </div>
+      <div class="o-price">4 400 DA</div>
+    </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 5: STATS ══ -->
+<div class="screen" id="s5">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 5 — Statistiques &amp; performance</div>
+<div class="shell">
+  <div style="display:flex">
+    <div class="sidebar">
+      <div class="topbar-logo" style="font-size:11px;color:#F0AE1A;margin-bottom:8px">SO</div>
+      <div class="sb-icon" title="Commandes" onclick="go(&#39;s4&#39;)">📦</div>
+      <div class="sb-icon active" title="Statistiques">📊</div>
+      <div class="sb-icon" title="Produits">🏷</div>
+      <div class="sb-icon" title="Feedbacks">💬</div>
+      <div class="sb-icon" title="Safe Insights" onclick="go(&#39;s6&#39;)">🔍</div>
+      <div class="sb-icon" title="Safe Academy">🎓</div>
+      <div style="flex:1"></div>
+      <div class="sb-icon" title="Profil">👤</div>
+    </div>
+    <div class="main-panel">
+      <div class="dash-top"><div class="dash-top-title">Statistiques</div><div style="color:rgba(255,255,255,0.7);font-size:12px">Avril 2026</div></div>
+      <div style="padding:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+          <div class="stat-card"><div class="stat-val" style="color:#0D3B66">342</div><div class="stat-lbl">Commandes ce mois</div><div class="stat-trend" style="color:#0D6E3F">+18% vs mars</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#0D6E3F">91%</div><div class="stat-lbl">Taux de livraison</div><div class="stat-trend" style="color:#0D6E3F">Excellent</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#C0392B">9%</div><div class="stat-lbl">Taux de retour</div><div class="stat-trend" style="color:#0D6E3F">-3% vs mars</div></div>
+          <div class="stat-card"><div class="stat-val" style="color:#F0AE1A">87/100</div><div class="stat-lbl">Trust Score</div><div class="stat-trend" style="color:#0D6E3F">Niveau Or</div></div>
+        </div>
+        <div style="background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);padding:12px;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Meilleurs produits ce mois</div>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#0D3B66;flex-shrink:0"></div>
+              <div style="flex:1;color:var(--color-text-primary)">Abaya brodée blanche</div>
+              <div style="font-weight:500;color:#0D3B66">128 cmd</div>
+              <div style="background:#E6F7EE;color:#0D6E3F;font-size:10px;padding:2px 6px;border-radius:6px">Best</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#1A5C99;flex-shrink:0"></div>
+              <div style="flex:1;color:var(--color-text-primary)">Parfum Oud Al Haramain</div>
+              <div style="font-weight:500;color:#0D3B66">94 cmd</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#0D6E3F;flex-shrink:0"></div>
+              <div style="flex:1;color:var(--color-text-primary)">Sac cuir femme camel</div>
+              <div style="font-weight:500;color:#0D3B66">71 cmd</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);padding:12px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Feedbacks reçus</div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;background:#E6F7EE;border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:20px;font-weight:500;color:#0D6E3F">94%</div>
+              <div style="font-size:10px;color:#063D22;margin-top:2px">Positifs</div>
+            </div>
+            <div style="flex:1;background:#FDEDEB;border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:20px;font-weight:500;color:#C0392B">6%</div>
+              <div style="font-size:10px;color:#7B241C;margin-top:2px">Négatifs</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--color-text-secondary)">Principaux motifs négatifs : délai de livraison (4), couleur différente (2)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ SCREEN 6: SAFE INSIGHTS ══ -->
+<div class="screen" id="s6">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 6 — Safe Insights (IA)</div>
+<div class="shell">
+  <div style="display:flex">
+    <div class="sidebar">
+      <div class="topbar-logo" style="font-size:11px;color:#F0AE1A;margin-bottom:8px">SO</div>
+      <div class="sb-icon" title="Commandes" onclick="go(&#39;s4&#39;)">📦</div>
+      <div class="sb-icon" title="Statistiques" onclick="go(&#39;s5&#39;)">📊</div>
+      <div class="sb-icon" title="Produits">🏷</div>
+      <div class="sb-icon" title="Feedbacks">💬</div>
+      <div class="sb-icon active" title="Safe Insights">🔍</div>
+      <div class="sb-icon" title="Safe Academy">🎓</div>
+      <div style="flex:1"></div>
+      <div class="sb-icon" title="Profil">👤</div>
+    </div>
+    <div class="main-panel">
+      <div class="dash-top"><div class="dash-top-title">Safe Insights — Analyse IA</div><div style="background:#EDE9FE;color:#5B21B6;font-size:11px;padding:3px 8px;border-radius:8px">IA active</div></div>
+      <div style="padding:12px">
+        <div style="background:#EDE9FE;border-radius:10px;padding:12px;margin-bottom:10px;border:0.5px solid #AFA9EC">
+          <div style="font-size:12px;font-weight:500;color:#3C3489;margin-bottom:8px">Analyse de vos 3 retours ce mois</div>
+          <div class="insight-item"><div class="insight-dot" style="background:#C0392B"></div><div class="insight-text">2 retours causés par des <strong style="color:var(--color-text-primary)">délais de livraison excessifs</strong> via Yalidine (J+5 au lieu de J+3).</div></div>
+          <div class="insight-item"><div class="insight-dot" style="background:#F0AE1A"></div><div class="insight-text">1 retour causé par une <strong style="color:var(--color-text-primary)">couleur de produit non conforme</strong> à la photo publiée.</div></div>
+        </div>
+        <div style="background:#E6F7EE;border-radius:10px;padding:12px;margin-bottom:10px;border:0.5px solid #A8DFBD">
+          <div style="font-size:12px;font-weight:500;color:#063D22;margin-bottom:8px">Recommandations Safe Order</div>
+          <div class="insight-item"><div class="insight-dot" style="background:#0D6E3F"></div><div class="insight-text">Envisagez d'ajouter <strong style="color:var(--color-text-primary)">ZR Express</strong> (délai moyen J+2) pour les wilayas de l'Est.</div></div>
+          <div class="insight-item"><div class="insight-dot" style="background:#0D6E3F"></div><div class="insight-text">Refaites les photos du "Sac camel" avec une meilleure lumière — la couleur actuelle paraît plus foncée.</div></div>
+          <div class="insight-item"><div class="insight-dot" style="background:#0D6E3F"></div><div class="insight-text">Vos points forts : emballage (0 retour emballage), descriptions (avis très positifs).</div></div>
+        </div>
+        <div style="background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);padding:12px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Retours traités — détail</div>
+          <div class="retour-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Commande #1847 — Amira K.</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">Oran · Yalidine · J+6</div></div>
+              <div style="font-size:11px;color:#C0392B;font-weight:500">Retour</div>
+            </div>
+            <div class="ai-badge">IA : Délai livreur — recommande ZR Express</div>
+          </div>
+          <div class="retour-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Commande #1831 — Rami B.</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">Constantine · Yalidine · J+5</div></div>
+              <div style="font-size:11px;color:#C0392B;font-weight:500">Retour</div>
+            </div>
+            <div class="ai-badge">IA : Couleur photo — mettre à jour les visuels</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- NAVIGATION -->
+<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+  <button onclick="go(&#39;s1&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">1. Accueil</button>
+  <button onclick="go(&#39;s2&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">2. Inscription</button>
+  <button onclick="go(&#39;s3&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">3. Conditions</button>
+  <button onclick="go(&#39;s4&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">4. Dashboard</button>
+  <button onclick="go(&#39;s5&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">5. Statistiques</button>
+  <button onclick="go(&#39;s6&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">6. Safe Insights</button>
+</div>
+</div>
+
+<script>
+const TABS={
+  confirmation:[
+    {name:"Nassim T.",detail:"Alger · #2041 · Safe Pay ✓",badge:"Safe Pay",badgeColor:"#E6F7EE",badgeText:"#0D6E3F",dot:"#0D6E3F",price:"3 200 DA",note:""},
+    {name:"Lina B.",detail:"Oran · #2040 · Appel requis",badge:"Appel",badgeColor:"#FEF7E0",badgeText:"#7A5600",dot:"#F0AE1A",price:"1 800 DA",note:""},
+    {name:"Karim M.",detail:"Blida · #2039 · 1ère commande",badge:"Nouveau",badgeColor:"#E8F0FE",badgeText:"#0D3B66",dot:"#1A5C99",price:"5 500 DA",note:""},
+    {name:"Sara H.",detail:"Constantine · #2038 · Client fidèle",badge:"Fidèle",badgeColor:"#EDE9FE",badgeText:"#3C3489",dot:"#534AB7",price:"2 100 DA",note:""},
+    {name:"Walid K.",detail:"Annaba · #2037 · Risque élevé",badge:"Risque",badgeColor:"#FDEDEB",badgeText:"#791F1F",dot:"#C0392B",price:"4 400 DA",note:""},
+  ],
+  preparation:[
+    {name:"Amina C.",detail:"Alger · #2036 · Imprimer tracking",badge:"Prêt",badgeColor:"#E6F7EE",badgeText:"#0D6E3F",dot:"#0D6E3F",price:"2 700 DA",note:""},
+    {name:"Hamza L.",detail:"Sétif · #2035 · Livraison jeudi",badge:"Différé",badgeColor:"#FEF7E0",badgeText:"#7A5600",dot:"#F0AE1A",price:"1 200 DA",note:"Remarque : prendre jeudi"},
+    {name:"Rania D.",detail:"Tlemcen · #2034 · Urgent",badge:"Urgent",badgeColor:"#FDEDEB",badgeText:"#791F1F",dot:"#C0392B",price:"3 900 DA",note:""},
+  ],
+  dispatch:[
+    {name:"Youcef R.",detail:"Oran · #2033 · Yalidine — aujourd'hui",badge:"Dispatch",badgeColor:"#E8F0FE",badgeText:"#0C447C",dot:"#1A5C99",price:"2 300 DA",note:""},
+    {name:"Fatima Z.",detail:"Alger · #2030 · ZR Express",badge:"Dispatch",badgeColor:"#E8F0FE",badgeText:"#0C447C",dot:"#1A5C99",price:"4 100 DA",note:""},
+    {name:"Omar K.",detail:"Béjaïa · #2028 · Maystro",badge:"Dispatch",badgeColor:"#E8F0FE",badgeText:"#0C447C",dot:"#1A5C99",price:"890 DA",note:""},
+  ],
+  livraison:[
+    {name:"Hind B.",detail:"Alger · #2027 · En route · J+2",badge:"En route",badgeColor:"#E6F7EE",badgeText:"#0D6E3F",dot:"#0D6E3F",price:"3 600 DA",note:""},
+    {name:"Tarek S.",detail:"Oran · #2025 · Agence · J+4",badge:"Agence",badgeColor:"#FEF7E0",badgeText:"#7A5600",dot:"#F0AE1A",price:"1 500 DA",note:""},
+    {name:"Meriem A.",detail:"Constantine · #2022 · Retard J+5",badge:"Retard",badgeColor:"#FDEDEB",badgeText:"#791F1F",dot:"#C0392B",price:"2 200 DA",note:""},
+  ],
+  livre:[
+    {name:"Anis M.",detail:"Alger · #2020 · Livré hier · Avis positif",badge:"Livré",badgeColor:"#E6F7EE",badgeText:"#0D6E3F",dot:"#0D6E3F",price:"4 800 DA",note:""},
+    {name:"Leila K.",detail:"Blida · #2018 · Livré · Pas d'avis",badge:"Livré",badgeColor:"#E6F7EE",badgeText:"#0D6E3F",dot:"#0D6E3F",price:"1 900 DA",note:""},
+  ],
+  retour:[
+    {name:"Amira K.",detail:"Oran · #1847 · Cause : délai Yalidine",badge:"IA analysé",badgeColor:"#EDE9FE",badgeText:"#3C3489",dot:"#C0392B",price:"-1 200 DA",note:""},
+    {name:"Rami B.",detail:"Constantine · #1831 · Cause : couleur",badge:"IA analysé",badgeColor:"#EDE9FE",badgeText:"#3C3489",dot:"#C0392B",price:"-900 DA",note:""},
+    {name:"Dina S.",detail:"Alger · #1819 · Cause : délai",badge:"IA analysé",badgeColor:"#EDE9FE",badgeText:"#3C3489",dot:"#C0392B",price:"-2 100 DA",note:""},
+  ]
+};
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s4') renderOrders('confirmation');
+}
+
+function showTab(tab,btn){
+  document.querySelectorAll('.ptab').forEach(t=>{t.style.background='#E9ECEF';t.style.color='#444';});
+  const colors={confirmation:'#1A5C99',preparation:'#0D6E3F',dispatch:'#0E7490',livraison:'#534AB7',livre:'#1A9456',retour:'#C0392B'};
+  btn.style.background=colors[tab]||'#1A5C99';btn.style.color='#fff';
+  renderOrders(tab);
+}
+
+function renderOrders(tab){
+  const list=document.getElementById('orders-list');
+  const orders=TABS[tab]||[];
+  list.innerHTML=orders.map(o=>`
+    <div class="order-card">
+      <div class="o-dot" style="background:${o.dot}"></div>
+      <div class="o-info">
+        <div class="o-name">${o.name}</div>
+        <div class="o-detail">${o.detail}${o.note?'<br><em>'+o.note+'</em>':''}</div>
+        <span class="o-badge" style="background:${o.badgeColor};color:${o.badgeText};margin-top:3px;display:inline-block">${o.badge}</span>
+      </div>
+      <div class="o-price">${o.price}</div>
+    </div>`).join('');
+}
+
+renderOrders('confirmation');
+</script>
+</body></html>

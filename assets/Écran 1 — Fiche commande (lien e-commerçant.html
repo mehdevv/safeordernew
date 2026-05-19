@@ -1,0 +1,454 @@
+
+<!-- saved from url=(0077)file:///C:/Users/ECC%20STORE/Downloads/safe_order_client_interface%20(1).html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+.screen{display:none}.screen.active{display:block}
+.shell{background:#F0F2F5;border-radius:16px;overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.topbar{background:#0D3B66;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{color:#fff;font-size:15px;font-weight:500}
+.topbar-logo span{color:#F0AE1A}
+.content{padding:16px}
+.inp{width:100%;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:0 10px;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary)}
+.sel{width:100%;height:34px;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:0 8px;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary)}
+.lbl{font-size:11px;color:var(--color-text-secondary);margin-bottom:4px;display:block;font-weight:500}
+.fg{margin-bottom:11px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sec{font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:14px 0 8px;padding-bottom:6px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.btn-p{background:#0D3B66;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.btn-g{background:#0D6E3F;color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:500;cursor:pointer;width:100%}
+.card{background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);padding:12px;margin-bottom:10px}
+.badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;display:inline-block}
+.pay-opt{border:1.5px solid var(--color-border-tertiary);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;margin-bottom:8px;background:#fff}
+.pay-opt.selected{border-color:#0D3B66;background:#E8F0FE}
+.pay-dot{width:16px;height:16px;border-radius:50%;border:2px solid #ccc;flex-shrink:0}
+.pay-dot.on{border-color:#0D3B66;background:#0D3B66}
+.track-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+.track-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:2px solid}
+.track-line{width:2px;background:#E9ECEF;flex:1;min-height:24px;margin:0 auto;margin-top:0;position:relative;left:15px;top:-10px}
+.track-line.done{background:#0D6E3F}
+.order-row{background:#fff;border-radius:10px;border:0.5px solid var(--color-border-tertiary);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.tab-row{display:flex;gap:0;margin-bottom:12px;border:0.5px solid var(--color-border-secondary);border-radius:8px;overflow:hidden}
+.tab{flex:1;padding:7px;font-size:12px;border:none;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.tab.on{background:#0D3B66;color:#fff;font-weight:500}
+</style>
+
+</head><body><h2 class="sr-only">Safe Order — interface client : formulaire commande, tracking, pannier et wallet</h2>
+
+<div style="display:flex;flex-direction:column;gap:16px;padding:8px 0 16px">
+
+<!-- ══ S1 : FICHE COMMANDE CLIENT ══ -->
+<div class="screen active" id="c1">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 1 — Fiche commande (lien e-commerçant)</div>
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-logo">Safe<span>Order</span> <span style="color:rgba(255,255,255,0.5);font-size:12px;font-weight:400">— Boutique Nour Fashion</span></div>
+    <div style="background:#0D6E3F;color:#fff;font-size:10px;padding:3px 8px;border-radius:8px">Certifiée ✓</div>
+  </div>
+  <div class="content">
+    <!-- Produit -->
+    <div class="card" style="border-left:3px solid #0D3B66;display:flex;gap:12px;align-items:center">
+      <div style="width:56px;height:56px;background:#E8F0FE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">👗</div>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Abaya brodée — Blanc cassé</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">Taille : M · Réf. #AB-224</div>
+        <div style="font-size:14px;font-weight:500;color:#0D3B66;margin-top:4px">3 200 DA</div>
+      </div>
+    </div>
+
+    <div class="sec">Vos informations</div>
+    <div class="fr fg">
+      <div><label class="lbl">Prénom</label><input class="inp" placeholder="Amira"></div>
+      <div><label class="lbl">Nom</label><input class="inp" placeholder="Khelil"></div>
+    </div>
+    <div class="fg"><label class="lbl">Numéro de téléphone</label><input class="inp" placeholder="0550 000 000"></div>
+
+    <div class="sec">Livraison</div>
+    <div class="fg">
+      <label class="lbl">Société de livraison</label>
+      <select class="sel"><option>Yalidine</option><option>ZR Express</option><option>Maystro</option><option>Procolis</option></select>
+    </div>
+    <div class="fr fg">
+      <div><label class="lbl">Wilaya</label>
+        <select class="sel"><option>Oran</option><option>Alger</option><option>Constantine</option><option>Annaba</option></select>
+      </div>
+      <div><label class="lbl">Commune</label><input class="inp" placeholder="Es Sénia"></div>
+    </div>
+    <div class="fg"><label class="lbl">Adresse complète</label><input class="inp" placeholder="Cité, Rue, Numéro..."></div>
+    <div class="fg">
+      <label class="lbl">Mode de réception</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#E8F0FE;border:1.5px solid #0D3B66;border-radius:8px;padding:8px 10px;cursor:pointer"><input type="radio" name="mode" checked=""> Bureau agence</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--color-text-primary);background:#fff;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:8px 10px;cursor:pointer"><input type="radio" name="mode"> À domicile</label>
+      </div>
+    </div>
+    <div class="fg"><label class="lbl">Remarque (optionnel)</label><input class="inp" placeholder="Ex : je récupère jeudi uniquement..."></div>
+
+    <div class="sec">Dépôt intelligent Safe Pay</div>
+    <div style="background:#FEF7E0;border:1px solid #F0AE1A;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:12px;font-weight:500;color:#7A5600;margin-bottom:6px">Qu'est-ce que le dépôt intelligent ?</div>
+      <div style="font-size:11px;color:#7A5600;line-height:1.6">Vous payez <strong>320 DA</strong> (10% de la commande). Ce montant est <strong>déduit du prix final</strong> — vous paierez <strong>2 880 DA</strong> à la livraison au lieu de 3 200 DA. Il protège le vendeur des frais de retour si vous ne récupérez pas votre colis.</div>
+      <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:12px">
+        <span style="color:#7A5600">Prix produit</span><span style="font-weight:500;color:#7A5600">3 200 DA</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-top:2px">
+        <span style="color:#0D6E3F">— Dépôt payé maintenant</span><span style="font-weight:500;color:#0D6E3F">- 320 DA</span>
+      </div>
+      <div style="border-top:0.5px solid #F0AE1A;margin-top:8px;padding-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:13px">
+        <span style="font-weight:500;color:#7A5600">À payer à la livraison</span><span style="font-weight:500;color:#0D3B66">2 880 DA</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">Payer le dépôt via :</div>
+      <div class="pay-opt selected" onclick="selectPay(this)">
+        <div class="pay-dot on"></div>
+        <div style="font-size:13px;color:var(--color-text-primary)">💳 Carte bancaire CIB</div>
+      </div>
+      <div class="pay-opt" onclick="selectPay(this)">
+        <div class="pay-dot"></div>
+        <div style="font-size:13px;color:var(--color-text-primary)">📮 Carte Dahabia (CCP)</div>
+      </div>
+      <div class="pay-opt" onclick="selectPay(this)">
+        <div class="pay-dot"></div>
+        <div style="font-size:13px;color:var(--color-text-primary)">📱 BaridiMob</div>
+      </div>
+    </div>
+    <button class="btn-g" onclick="go(&#39;c2&#39;)">Valider ma commande ›</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ S2 : CONFIRMATION + CODE TRACKING ══ -->
+<div class="screen" id="c2">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 2 — Confirmation &amp; code tracking</div>
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-logo">Safe<span>Order</span></div>
+  </div>
+  <div class="content">
+    <div style="text-align:center;padding:20px 0 16px">
+      <div style="width:56px;height:56px;background:#E6F7EE;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px">✓</div>
+      <div style="font-size:16px;font-weight:500;color:#0D6E3F;margin-bottom:4px">Commande confirmée !</div>
+      <div style="font-size:12px;color:var(--color-text-secondary)">Dépôt Safe Pay de 320 DA reçu avec succès</div>
+    </div>
+    <div class="card" style="text-align:center;border:1.5px solid #0D3B66">
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;letter-spacing:0.06em;text-transform:uppercase">Votre code de suivi</div>
+      <div style="font-size:26px;font-weight:500;color:#0D3B66;letter-spacing:3px">SO-2847-XK</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-top:6px">Gardez ce code — il vous permettra de suivre votre commande</div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">Récapitulatif</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--color-text-secondary)">Produit</span><span style="color:var(--color-text-primary)">Abaya brodée Blanc cassé M</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--color-text-secondary)">Boutique</span><span style="color:var(--color-text-primary)">Nour Fashion</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--color-text-secondary)">Livraison</span><span style="color:var(--color-text-primary)">Yalidine · Oran · Bureau</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--color-text-secondary)">Dépôt payé</span><span style="color:#0D6E3F;font-weight:500">320 DA ✓</span></div>
+        <div style="border-top:0.5px solid var(--color-border-tertiary);padding-top:6px;display:flex;justify-content:space-between;font-weight:500"><span style="color:var(--color-text-primary)">À payer à la livraison</span><span style="color:#0D3B66">2 880 DA</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="btn-p" style="flex:1" onclick="go(&#39;c3&#39;)">Suivre ma commande</button>
+      <button style="flex:1;border:0.5px solid #0D3B66;background:transparent;color:#0D3B66;border-radius:8px;padding:11px;font-size:13px;font-weight:500;cursor:pointer" onclick="go(&#39;c4&#39;)">Mon panier</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S3 : TRACKING ══ -->
+<div class="screen" id="c3">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 3 — Suivi de commande (Safe Track)</div>
+<div class="shell">
+  <div class="topbar">
+    <div style="color:rgba(255,255,255,0.6);cursor:pointer;font-size:13px" onclick="go(&#39;c4&#39;)">‹</div>
+    <div class="topbar-logo">Suivi — SO-2847-XK</div>
+    <div style="width:20px"></div>
+  </div>
+  <div class="content">
+    <div class="card" style="border-left:3px solid #0D6E3F;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Abaya brodée Blanc cassé · M</div>
+          <div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">Nour Fashion · Yalidine · Oran</div>
+        </div>
+        <div class="badge" style="background:#E6F7EE;color:#0D6E3F">En route</div>
+      </div>
+    </div>
+
+    <div style="position:relative;padding-left:8px">
+      <!-- step done -->
+      <div class="track-step">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="track-icon" style="background:#E6F7EE;border-color:#0D6E3F;color:#0D6E3F">✓</div>
+          <div style="width:2px;height:32px;background:#0D6E3F;margin-top:2px"></div>
+        </div>
+        <div style="padding-top:6px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Commande confirmée</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">26 avr. 2026 · 10:24 · Safe Pay reçu</div>
+        </div>
+      </div>
+      <!-- step done -->
+      <div class="track-step">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="track-icon" style="background:#E6F7EE;border-color:#0D6E3F;color:#0D6E3F">✓</div>
+          <div style="width:2px;height:32px;background:#0D6E3F;margin-top:2px"></div>
+        </div>
+        <div style="padding-top:6px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">En préparation</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">26 avr. 2026 · 14:10 · Colis emballé</div>
+        </div>
+      </div>
+      <!-- step done -->
+      <div class="track-step">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="track-icon" style="background:#E6F7EE;border-color:#0D6E3F;color:#0D6E3F">✓</div>
+          <div style="width:2px;height:32px;background:#0D6E3F;margin-top:2px"></div>
+        </div>
+        <div style="padding-top:6px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Remis à Yalidine</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">27 avr. 2026 · 09:00 · Alger → Oran</div>
+        </div>
+      </div>
+      <!-- step ACTIVE -->
+      <div class="track-step">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="track-icon" style="background:#E8F0FE;border-color:#0D3B66;color:#0D3B66;font-size:12px">→</div>
+          <div style="width:2px;height:32px;background:#E9ECEF;margin-top:2px"></div>
+        </div>
+        <div style="padding-top:6px">
+          <div style="font-size:12px;font-weight:500;color:#0D3B66">En route vers Oran · En cours</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Arrivée estimée : 28 avr. 2026</div>
+        </div>
+      </div>
+      <!-- step pending -->
+      <div class="track-step">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="track-icon" style="background:#F8F9FA;border-color:#ccc;color:#aaa">🏠</div>
+        </div>
+        <div style="padding-top:6px">
+          <div style="font-size:12px;color:var(--color-text-secondary)">Livraison à votre bureau Yalidine</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">En attente</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:6px">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">Votre remarque</div>
+      <textarea style="width:100%;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--color-text-primary);background:var(--color-background-primary);resize:none;height:60px;font-family:system-ui" placeholder="Ajoutez une remarque pour cette commande..."></textarea>
+      <button style="margin-top:6px;border:0.5px solid #0D3B66;background:transparent;color:#0D3B66;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer">Envoyer la remarque</button>
+    </div>
+
+    <div class="card" style="background:#F8F9FA">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px">Feedback (disponible après réception)</div>
+      <div style="display:flex;gap:4px;margin-bottom:6px">
+        <span style="font-size:22px;opacity:0.3">★</span><span style="font-size:22px;opacity:0.3">★</span><span style="font-size:22px;opacity:0.3">★</span><span style="font-size:22px;opacity:0.3">★</span><span style="font-size:22px;opacity:0.3">★</span>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary)">Vous pourrez laisser un avis une fois votre colis reçu. Votre feedback impacte le Trust Score de la boutique.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S4 : PANIER / MES COMMANDES ══ -->
+<div class="screen" id="c4">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 4 — Mon panier &amp; mes commandes</div>
+<div class="shell">
+  <div class="topbar">
+    <div class="topbar-logo">Safe<span>Order</span> — Mon espace</div>
+    <div style="background:#F0AE1A;color:#0D3B66;font-size:11px;padding:3px 8px;border-radius:8px;font-weight:500">3 actives</div>
+  </div>
+  <div class="content">
+    <div class="tab-row">
+      <button class="tab on" id="tab-cmd" onclick="switchTab(&#39;cmd&#39;)">Commandes</button>
+      <button class="tab" id="tab-wallet" onclick="switchTab(&#39;wallet&#39;)">Wallet</button>
+    </div>
+
+    <div id="view-cmd">
+      <div class="order-row">
+        <div style="width:44px;height:44px;background:#E8F0FE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👗</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Nour Fashion</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Abaya brodée · Blanc M</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">SO-2847-XK · Oran</div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <span class="badge" style="background:#E8F0FE;color:#0D3B66">En route</span>
+            <span class="badge" style="background:#E6F7EE;color:#0D6E3F">Safe Pay ✓</span>
+          </div>
+        </div>
+        <button style="border:0.5px solid #0D3B66;background:transparent;color:#0D3B66;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;flex-shrink:0" onclick="go(&#39;c3&#39;)">Suivre</button>
+      </div>
+
+      <div class="order-row">
+        <div style="width:44px;height:44px;background:#FEF7E0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">👜</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Dz Maroquinerie</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Sac cuir · Camel · Unique</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">SO-2831-MR · Alger</div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <span class="badge" style="background:#FEF7E0;color:#7A5600">En agence</span>
+            <span class="badge" style="background:#E6F7EE;color:#0D6E3F">Safe Pay ✓</span>
+          </div>
+        </div>
+        <button style="border:0.5px solid #0D3B66;background:transparent;color:#0D3B66;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;flex-shrink:0">Suivre</button>
+      </div>
+
+      <div class="order-row">
+        <div style="width:44px;height:44px;background:#E6F7EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🧴</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Beauty Glow DZ</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Sérum Vitamine C · 30ml</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">SO-2819-FS · Oran</div>
+          <div style="display:flex;gap:6px;margin-top:4px">
+            <span class="badge" style="background:#E6F7EE;color:#0D6E3F">Livré ✓</span>
+          </div>
+        </div>
+        <button style="border:0.5px solid #0D6E3F;background:transparent;color:#0D6E3F;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;flex-shrink:0" onclick="go(&#39;c5&#39;)">Feedback</button>
+      </div>
+    </div>
+
+    <div id="view-wallet" style="display:none">
+      <div class="tab-row" style="margin-bottom:12px">
+        <button class="tab on" id="wt-week" onclick="switchWallet(&#39;week&#39;)">Cette semaine</button>
+        <button class="tab" id="wt-month" onclick="switchWallet(&#39;month&#39;)">Ce mois</button>
+      </div>
+      <div id="wallet-content">
+        <!-- week view -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:18px;font-weight:500;color:#0D3B66">3</div>
+            <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Commandes</div>
+          </div>
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:18px;font-weight:500;color:#0D6E3F">7 490</div>
+            <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Total DA</div>
+          </div>
+          <div style="background:var(--color-background-secondary);border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:18px;font-weight:500;color:#F0AE1A">620</div>
+            <div style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Dépôts DA</div>
+          </div>
+        </div>
+        <div id="wallet-list">
+          <div class="card" style="padding:10px 12px;margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Nour Fashion</div>
+              <span class="badge" style="background:#E8F0FE;color:#0D3B66">En route</span>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.6">Abaya brodée · Blanc cassé · Taille M<br>Boutique Alger · Yalidine · Bureau Oran</div>
+            <div style="border-top:0.5px solid var(--color-border-tertiary);margin-top:7px;padding-top:7px;display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:var(--color-text-secondary)">Prix total</span><span style="font-weight:500;color:var(--color-text-primary)">3 200 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:#F0AE1A">Dépôt Smart payé</span><span style="font-weight:500;color:#F0AE1A">- 320 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:var(--color-text-secondary)">Reste à payer</span><span style="font-weight:500;color:#0D3B66">2 880 DA</span>
+            </div>
+          </div>
+          <div class="card" style="padding:10px 12px;margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Dz Maroquinerie</div>
+              <span class="badge" style="background:#FEF7E0;color:#7A5600">En agence</span>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.6">Sac cuir · Camel · Taille unique<br>Boutique Oran · Yalidine · Bureau Alger</div>
+            <div style="border-top:0.5px solid var(--color-border-tertiary);margin-top:7px;padding-top:7px;display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:var(--color-text-secondary)">Prix total</span><span style="font-weight:500;color:var(--color-text-primary)">2 990 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:#F0AE1A">Dépôt Smart payé</span><span style="font-weight:500;color:#F0AE1A">- 300 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:var(--color-text-secondary)">Reste à payer</span><span style="font-weight:500;color:#0D3B66">2 690 DA</span>
+            </div>
+          </div>
+          <div class="card" style="padding:10px 12px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+              <div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Beauty Glow DZ</div>
+              <span class="badge" style="background:#E6F7EE;color:#0D6E3F">Livré ✓</span>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.6">Sérum Vitamine C · 30ml<br>Boutique Alger · ZR Express · Domicile Oran</div>
+            <div style="border-top:0.5px solid var(--color-border-tertiary);margin-top:7px;padding-top:7px;display:flex;justify-content:space-between;font-size:11px">
+              <span style="color:var(--color-text-secondary)">Prix total</span><span style="font-weight:500;color:var(--color-text-primary)">1 300 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:var(--color-text-secondary)">Livraison domicile</span><span style="color:var(--color-text-secondary)">400 DA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:3px">
+              <span style="color:#0D6E3F">Dépôt restitué</span><span style="font-weight:500;color:#0D6E3F">✓ déduit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S5 : FEEDBACK ══ -->
+<div class="screen" id="c5">
+<div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:8px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Écran 5 — Feedback après réception</div>
+<div class="shell">
+  <div class="topbar">
+    <div style="color:rgba(255,255,255,0.6);cursor:pointer;font-size:13px" onclick="go(&#39;c4&#39;)">‹</div>
+    <div class="topbar-logo">Laisser un feedback</div>
+    <div style="width:20px"></div>
+  </div>
+  <div class="content">
+    <div class="card" style="border-left:3px solid #0D6E3F;display:flex;gap:10px;align-items:center;margin-bottom:14px">
+      <div style="font-size:22px">🧴</div>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Beauty Glow DZ</div>
+        <div style="font-size:11px;color:var(--color-text-secondary)">Sérum Vitamine C · 30ml · Livré ✓</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:10px">Votre expérience avec cette boutique</div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:14px" id="stars-row">
+        <span class="star" data-v="1" onclick="rateStar(1)" style="font-size:30px;cursor:pointer;opacity:0.3">★</span>
+        <span class="star" data-v="2" onclick="rateStar(2)" style="font-size:30px;cursor:pointer;opacity:0.3">★</span>
+        <span class="star" data-v="3" onclick="rateStar(3)" style="font-size:30px;cursor:pointer;opacity:0.3">★</span>
+        <span class="star" data-v="4" onclick="rateStar(4)" style="font-size:30px;cursor:pointer;opacity:0.3">★</span>
+        <span class="star" data-v="5" onclick="rateStar(5)" style="font-size:30px;cursor:pointer;opacity:0.3">★</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;background:#E6F7EE;border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox" checked=""> Produit conforme</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;background:#E6F7EE;border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox"> Livraison rapide</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;background:#E6F7EE;border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox" checked=""> Bon emballage</label>
+        <label style="font-size:11px;display:flex;align-items:center;gap:6px;background:#FDEDEB;border-radius:8px;padding:7px 10px;cursor:pointer"><input type="checkbox"> Couleur différente</label>
+      </div>
+      <div class="fg"><label class="lbl">Commentaire libre</label>
+        <textarea style="width:100%;border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--color-text-primary);background:var(--color-background-primary);resize:none;height:70px;font-family:system-ui" placeholder="Décrivez votre expérience librement — positif ou négatif..."></textarea>
+      </div>
+      <div style="background:#E8F0FE;border-radius:8px;padding:8px 10px;margin-bottom:12px;font-size:11px;color:#0D3B66">
+        Votre feedback est authentique car lié à votre commande réelle. Il contribue au <strong>Trust Score</strong> de la boutique et vous aide à devenir un client reconnu.
+      </div>
+      <button class="btn-g" onclick="alert(&#39;Merci ! Votre feedback a été enregistré. Trust Score mis à jour.&#39;)">Envoyer mon feedback</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- NAV -->
+<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+  <button onclick="go(&#39;c1&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">1. Fiche commande</button>
+  <button onclick="go(&#39;c2&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">2. Confirmation</button>
+  <button onclick="go(&#39;c3&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">3. Safe Track</button>
+  <button onclick="go(&#39;c4&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">4. Mon panier</button>
+  <button onclick="go(&#39;c5&#39;)" style="font-size:11px;padding:5px 12px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer">5. Feedback</button>
+</div>
+</div>
+
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function selectPay(el){document.querySelectorAll('.pay-opt').forEach(o=>{o.classList.remove('selected');o.querySelector('.pay-dot').classList.remove('on');});el.classList.add('selected');el.querySelector('.pay-dot').classList.add('on');}
+function switchTab(t){
+  document.getElementById('view-cmd').style.display=t==='cmd'?'block':'none';
+  document.getElementById('view-wallet').style.display=t==='wallet'?'block':'none';
+  document.getElementById('tab-cmd').className='tab'+(t==='cmd'?' on':'');
+  document.getElementById('tab-wallet').className='tab'+(t==='wallet'?' on':'');
+}
+function switchWallet(t){
+  document.getElementById('wt-week').className='tab'+(t==='week'?' on':'');
+  document.getElementById('wt-month').className='tab'+(t==='month'?' on':'');
+}
+function rateStar(v){document.querySelectorAll('.star').forEach(s=>{s.style.color=parseInt(s.dataset.v)<=v?'#F0AE1A':'';s.style.opacity=parseInt(s.dataset.v)<=v?'1':'0.3';});}
+</script>
+</body></html>
